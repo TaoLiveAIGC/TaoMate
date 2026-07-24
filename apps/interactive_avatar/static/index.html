@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>TaoMate</title>
+    <link rel="stylesheet" href="/static/styles.css?v=20260721-custom-scene02" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="app-header">
+        <div class="brand-lockup">
+          <span class="brand-mark" aria-hidden="true">T</span>
+          <div>
+            <p>TaoMate</p>
+            <h1>实时数字人</h1>
+          </div>
+        </div>
+        <div class="header-actions">
+          <span class="status-pill" id="serviceStatus">READY</span>
+          <button type="button" id="resetSessionBtn" class="header-btn">新会话</button>
+        </div>
+      </header>
+
+      <section class="control-panel" aria-label="输入控制">
+        <form id="jobForm" class="input-stack">
+          <section class="control-section template-section" aria-label="角色">
+            <div class="section-heading">
+              <span class="field-title">角色</span>
+              <button type="button" id="clearTemplateBtn" class="text-btn">清除</button>
+            </div>
+            <div id="templateGrid" class="template-grid"></div>
+          </section>
+
+          <section class="control-section compact-settings" aria-label="生成设置">
+            <div class="setting-row">
+              <span class="field-title">模式</span>
+              <div class="mode-control">
+                <div class="mode-tabs" role="tablist" aria-label="模式">
+                  <button type="button" class="mode-tab active" data-mode="t2av">文本</button>
+                  <button type="button" class="mode-tab" data-mode="i2av" disabled aria-describedby="firstFrameComingSoon" title="首帧功能正在路上">首帧</button>
+                </div>
+                <span id="firstFrameComingSoon" class="coming-soon-note">首帧功能正在路上</span>
+              </div>
+            </div>
+            <div class="setting-row">
+              <span class="field-title">画幅</span>
+              <div class="aspect-tabs" aria-label="画幅">
+                <button type="button" class="aspect-tab active" data-aspect="landscape">
+                  <strong>横屏</strong><small>864 × 480</small>
+                </button>
+                <button type="button" class="aspect-tab" data-aspect="portrait">
+                  <strong>竖屏</strong><small>480 × 864</small>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <details class="optional-settings">
+            <summary>场景描述</summary>
+            <div class="optional-settings-body">
+              <label class="field">
+                <span>角色与场景</span>
+                <textarea id="sceneDescription" name="scene_description" rows="7" required placeholder="描述人物、固定镜头、光线和背景"></textarea>
+              </label>
+            </div>
+          </details>
+
+          <label class="field conversation-field">
+            <span>对话内容</span>
+            <textarea id="userText" name="user_text" rows="5" required placeholder="输入你想说的话"></textarea>
+          </label>
+
+          <div class="action-row">
+            <button class="secondary-btn" type="button" id="previewBtn">预览提示词</button>
+            <button class="primary-btn" type="submit">开始通话</button>
+            <button class="ghost-btn" type="button" id="cancelBtn" disabled>取消</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="stage-panel" aria-label="视频播放">
+        <div class="stage-topbar">
+          <h2 id="stageTitle">准备就绪</h2>
+          <div class="stage-state" aria-live="polite">
+            <span class="state-dot" aria-hidden="true"></span>
+            <span id="phaseMetric">准备就绪</span>
+            <span class="state-divider" aria-hidden="true"></span>
+            <span id="chunkMetric">等待接入</span>
+            <span id="modeMetric" class="sr-only">文本模式</span>
+            <span id="gpuMetric" class="sr-only">算力就绪</span>
+          </div>
+        </div>
+        <div id="systemNotice" class="system-notice hidden"></div>
+
+        <div class="video-frame" data-aspect="landscape">
+          <canvas id="liveCanvas" class="live-canvas" aria-label="直播画面"></canvas>
+          <video id="player" class="live-player active" playsinline preload="auto"></video>
+          <video id="preloadPlayer" class="live-player standby" playsinline preload="auto" muted></video>
+          <div id="liveOverlay" class="live-overlay hidden">
+            <span class="live-dot" aria-hidden="true"></span>
+            <span id="liveOverlayText">等待直播流</span>
+          </div>
+          <div id="emptyStage" class="empty-stage">
+            <div class="empty-mark" aria-hidden="true">T</div>
+            <p>等待开始</p>
+          </div>
+        </div>
+
+        <div class="playback-rail" id="playbackRail"></div>
+        <div class="live-controls" id="liveControls">
+          <button type="button" id="livePlayPauseBtn" class="live-control-btn">播放</button>
+          <input id="liveProgress" class="live-progress" type="range" min="0" max="0" value="0" step="0.01" aria-label="播放进度" />
+          <span id="liveClock" class="live-clock">00:00 / LIVE</span>
+          <button type="button" id="liveReplayBtn" class="live-control-btn" disabled>重播</button>
+          <button type="button" id="liveReturnBtn" class="live-control-btn" disabled>返回直播</button>
+        </div>
+
+        <details id="demoDrawer" class="demo-drawer">
+          <summary>
+            <span>参考样例</span>
+            <span class="drawer-action">查看</span>
+          </summary>
+          <section class="demo-showcase" aria-label="参考样例">
+            <div class="demo-video-shell">
+              <video id="demoPlayer" muted loop playsinline preload="metadata"></video>
+              <div id="demoPlaceholder" class="demo-placeholder">暂无样例</div>
+            </div>
+            <div class="demo-copy">
+              <h3 id="demoTitle">样例加载中</h3>
+              <p id="demoCaption"></p>
+              <div class="demo-stats">
+                <span id="demoMode">waiting</span>
+                <span id="demoClock">00:00</span>
+                <span id="demoFps" class="sr-only"></span>
+              </div>
+              <div class="demo-actions">
+                <button type="button" id="demoLiveBtn" class="demo-live-btn" disabled>在主画面试播</button>
+                <div id="demoDots" class="demo-dots"></div>
+              </div>
+            </div>
+          </section>
+        </details>
+      </section>
+
+      <aside class="inspector-panel" aria-label="历史和调试">
+        <section class="history-panel" aria-label="历史记录">
+          <div class="history-heading">
+            <strong>历史记录</strong>
+            <span id="historyCount">0 轮</span>
+          </div>
+          <div id="historyList" class="history-list"></div>
+        </section>
+
+        <details class="debug-drawer">
+          <summary class="debug-heading">
+            <strong>调试详情</strong>
+            <span>展开</span>
+          </summary>
+          <div class="debug-content">
+            <section class="inspector-section">
+              <h3>模型回复</h3>
+              <div id="replyBox" class="reply-box">等待回复</div>
+            </section>
+            <section class="inspector-section">
+              <h3>分段</h3>
+              <div id="segmentList" class="segment-list"></div>
+            </section>
+            <section class="inspector-section grow">
+              <h3>运行日志</h3>
+              <pre id="logBox" class="log-box"></pre>
+            </section>
+          </div>
+        </details>
+      </aside>
+    </main>
+
+    <script src="/static/app.js?v=20260721-custom-scene02"></script>
+  </body>
+</html>
