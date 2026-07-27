@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en" class="video-bg-root" data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="TaoMate: Anchor-Guided Memory Bridging Evolving and Reference States for Real-Time Audio-Video Digital Human Generation">
+    <meta name="keywords" content="TaoMate, digital human, audio-video generation, persistent memory, streaming generation, causal distillation">
+    <title>TaoMate: Real-Time Audio-Video Digital Human Generation</title>
+    <link rel="icon" href="data:,">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+  <script defer src="./assets/echo-page.js?v=20260724"></script>
+  <script defer src="./assets/cases-data.js?v=20260724"></script>
+  <script defer src="./assets/case-sections.js?v=20260724"></script>
+  <link rel="stylesheet" href="./assets/echo-page.css?v=20260724">
+  <link rel="stylesheet" href="./assets/gallery-mode.css?v=20260724">
+  <link rel="stylesheet" href="./assets/amber-theme.css?v=20260724">
+</head>
+<body class="video-bg-page">
+    <div class="global-video-bg" aria-hidden="true">
+        <video autoplay muted loop playsinline></video>
+        <div class="global-video-tint"></div>
+    </div>
+
+    <header class="site-nav" aria-label="Primary navigation">
+        <a class="nav-brand" href="#top">TaoMate</a>
+        <nav class="nav-links" aria-label="Page sections">
+            <a href="#abstract">Overview</a>
+            <a href="#method">Method</a>
+            <a href="#feature-video">Gallery</a>
+            <a href="#results">Results</a>
+            <a href="#bibtex">BibTeX</a>
+        </nav>
+    </header>
+
+    <main id="top">
+        <section class="hero-centered" aria-label="TaoMate overview">
+            <div class="hero-inner">
+                <p class="hero-eyebrow">Technical Report &middot; 2026</p>
+                <h1 class="hero-title">TaoMate</h1>
+                <p class="hero-subtitle">
+                    Anchor-Guided Memory Bridging Evolving and Reference States for
+                    Real-Time Audio-Video Digital Human Generation
+                </p>
+                <p class="hero-authors">
+                    <a class="author-link" href="https://scholar.google.com/citations?user=qZvhvPcAAAAJ&amp;hl=en" target="_blank" rel="noopener">Qijun Gan</a><sup>1</sup>,
+                    Chenwei Zhang<sup>1</sup>,
+                    <a class="author-link" href="https://scholar.google.com/citations?user=oi1LErsAAAAJ&amp;hl=en" target="_blank" rel="noopener">Meiguang Jin</a><sup>1*</sup>,
+                    Junfeng Ma<sup>1</sup>,
+                    <a class="author-link" href="https://scholar.google.com/citations?user=cFS40tMAAAJ&amp;hl=en&amp;oi=sra" target="_blank" rel="noopener">Qiu Shen</a><sup>2</sup>
+                </p>
+                <p class="hero-affiliations">
+                    <span><sup>1</sup>Taobao &amp; Tmall Group of Alibaba</span>
+                    <span><sup>2</sup>Nanjing University</span>
+                </p>
+                <p class="hero-typewriter" aria-label="Keyword highlights">
+                    <span
+                        data-typewriter
+                        data-phrases="Anchor-Guided Persistent Memory|Anchor-Preserving Causal Distillation|Stage-Parallel Streaming Inference|Real-Time Digital Humans|One-Minute Bilingual Continuations"
+                    >Anchor-Guided Persistent Memory</span><span class="typewriter-caret" aria-hidden="true"></span>
+                </p>
+                <p class="hero-copy">
+                    An anchor-guided persistent-memory framework for few-step joint audio-video
+                    generation &mdash; stable appearance across prompt transitions, strong audio-visual
+                    synchronization, and real-time streaming inference.
+                </p>
+                <div class="hero-actions">
+                    <a class="btn btn-primary" href="#bibtex">Paper</a>
+                    <a class="btn btn-secondary" href="https://github.com/TaoLiveAIGC/TaoMate" target="_blank" rel="noopener">GitHub</a>
+                    <a class="btn btn-secondary" href="https://huggingface.co/TaoLiveAIGC/TaoMate" target="_blank" rel="noopener">Hugging Face</a>
+                    <a class="btn btn-secondary" href="#method">Method</a>
+                    <a class="btn btn-secondary" href="#feature-video">Watch Cases</a>
+                </div>
+
+                <div class="hero-stats" aria-label="Key highlights">
+                    <div>
+                        <strong>35 FPS</strong>
+                        <span>real-time stage-parallel output</span>
+                    </div>
+                    <div>
+                        <strong>22.1B</strong>
+                        <span>denoising backbone parameters</span>
+                    </div>
+                    <div>
+                        <strong>&gt;30 min</strong>
+                        <span>uninterrupted single generation</span>
+                    </div>
+                    <div>
+                        <strong>5.773</strong>
+                        <span>LipSync score on long-form benchmark</span>
+                    </div>
+                </div>
+            </div>
+            <a class="hero-scroll-hint" href="#abstract" aria-label="Scroll to the content">Scroll</a>
+        </section>
+
+        <div class="content-scroll-shell" aria-label="TaoMate technical content">
+            <section id="abstract" class="section">
+                <div class="container-wide">
+                    <div class="section-header fade-in-up">
+                        <h2>Overview</h2>
+                    </div>
+                    <div class="overview-grid">
+                        <p class="abstract-text fade-in-up">
+                            Real-time long-form digital-human generation relies on causal models to extend
+                            audio-visual content while preserving subject appearance and audio-video
+                            synchronization across successive segments. A bounded cache retains local motion and
+                            phonetic context but discards older evidence, whereas attending to the complete
+                            generated history is computationally expensive and can propagate accumulated errors.
+                            We present <strong>TaoMate</strong>, an anchor-guided persistent-memory framework for
+                            few-step joint audio-video generation. The framework preserves an immutable visual
+                            anchor, compresses completed video and audio blocks into fixed-capacity dynamic
+                            states, and retrieves those states through modality-specific residual attention
+                            without extending the active cache. A reference-aware modulation method additionally
+                            conditions video features on dynamic and anchor appearance statistics.
+                            Anchor-preserving causal-context distillation varies rollout horizon, prefix
+                            provenance, and cache-history reliability while keeping the immutable visual anchor
+                            unperturbed. By separating persistent memory from stage-local denoising
+                            dependencies, TaoMate further admits stage-parallel execution across blocks,
+                            accelerating autoregressive inference without pipeline-specific retraining. We
+                            evaluate long-form video continuations with appearance, temporal, synchronization,
+                            facial, and speech diagnostics. Results show that TaoMate preserves stable
+                            appearance across prompt-conditioned segments and strong audio-visual
+                            synchronization under autoregressive generation.
+                        </p>
+                        <aside class="glance-card fade-in-up" aria-label="At a glance">
+                            <h3>At a Glance</h3>
+                            <dl>
+                                <div>
+                                    <dt>Streaming output</dt>
+                                    <dd>35 FPS</dd>
+                                </div>
+                                <div>
+                                    <dt>Single-device latency</dt>
+                                    <dd>130.3 s / 1441 fr</dd>
+                                </div>
+                                <div>
+                                    <dt>Backbone</dt>
+                                    <dd>22.1B</dd>
+                                </div>
+                                <div>
+                                    <dt>Desync</dt>
+                                    <dd>0.000</dd>
+                                </div>
+                                <div>
+                                    <dt>Long consistency</dt>
+                                    <dd>0.9520</dd>
+                                </div>
+                                <div>
+                                    <dt>Color&Delta;</dt>
+                                    <dd>0.00483</dd>
+                                </div>
+                            </dl>
+                        </aside>
+                    </div>
+                </div>
+            </section>
+
+            <section id="method" class="section section-alt">
+                <div class="container-wide">
+                    <div class="section-header fade-in-up">
+                        <h2>Method</h2>
+                        <p>Three complementary designs separate persistent memory from stage-local denoising.</p>
+                    </div>
+                    <div class="method-cards">
+                        <article class="method-card fade-in-up">
+                            <span class="method-tag">Memory</span>
+                            <h3>Anchor-Guided Persistent Memory</h3>
+                            <p>
+                                An immutable visual anchor is coupled with adaptive audio-video states beyond the
+                                active KV cache. Modality-specific residual attention retrieves structural and
+                                acoustic history, while reference-aware FiLM reconciles dynamic appearance with
+                                the anchor.
+                            </p>
+                        </article>
+                        <article class="method-card fade-in-up">
+                            <span class="method-tag">Training</span>
+                            <h3>Anchor-Preserving Causal Distillation</h3>
+                            <p>
+                                Causal-context distillation with mixed rollout horizons and student-generated
+                                prefixes models accumulated causal errors, while perturbing only non-anchor
+                                history keeps the persistent visual reference intact for robust recursive
+                                generation.
+                            </p>
+                        </article>
+                        <article class="method-card fade-in-up">
+                            <span class="method-tag">Inference</span>
+                            <h3>Stage-Parallel Streaming</h3>
+                            <p>
+                                Successive denoising stages are assigned to different devices, letting causally
+                                ready blocks advance concurrently after pipeline fill &mdash; retraining-free
+                                real-time long-form generation on a 22B-parameter backbone.
+                            </p>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <section id="feature-video" class="section section-alt">
+                <div class="container-wide">
+                    <div class="section-header fade-in-up">
+                        <h2>
+                            30-Minute Generation
+                            <span class="av-badge section-av-badge" aria-label="Audio-video sample">
+                                <svg class="av-badge-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" height="24" width="24" aria-hidden="true"><path fill="currentColor" d="M6.61743 7.57642c0.37364 -0.15469 0.80389 -0.06916 1.08985 0.21679l8.50002 8.49999c0.2858 0.286 0.3715 0.7163 0.2168 1.0899 -0.1548 0.3734 -0.5196 0.617 -0.9239 0.6171h-4.5859l-1.49999 1.5c-0.78094 0.7809 -2.04708 0.7807 -2.82813 0l-2.08594 -2.0859c-0.78094 -0.781 -0.78095 -2.0471 0 -2.8281l1.5 -1.5V8.50024c0 -0.40441 0.24359 -0.76901 0.61719 -0.92382m1.38281 5.92378c-0.00006 0.2652 -0.1055 0.5196 -0.29296 0.7071l-1.79297 1.7929 2.08593 2.086 1.79297 -1.793 0.07325 -0.0664c0.17794 -0.1458 0.40174 -0.2266 0.63374 -0.2266h2.586l-5.08596 -5.0859zm0.50098 -9.7939c3.27128 -1.37885 7.19558 -0.73781 9.86328 1.92969 2.6677 2.66766 3.3095 6.59191 1.9307 9.86331 -0.2146 0.5088 -0.8017 0.7477 -1.3106 0.5332 -0.5085 -0.2146 -0.7472 -0.8009 -0.5332 -1.3096 1.0739 -2.5477 0.5719 -5.59994 -1.501 -7.67285 -2.0728 -2.07265 -5.1243 -2.57469 -7.67184 -1.50098 -0.50888 0.21439 -1.09605 -0.02433 -1.31054 -0.5332 -0.21428 -0.50871 0.0247 -1.09492 0.5332 -1.30957m2.84668 3.8418c1.3581 -0.19803 2.7899 0.22546 3.835 1.2705 1.0448 1.04512 1.4668 2.4761 1.2685 3.834 -0.0536 0.3673 -0.4953 0.4754 -0.7578 0.2129L11.135 8.30591c-0.2623 -0.26241 -0.1541 -0.70403 0.2129 -0.75781"/></svg>
+                                <span>Audio</span>
+                            </span>
+                        </h2>
+                        <p>One uninterrupted thirty-minute documentary narration — stable appearance, scene, and voice from beginning to end.</p>
+                    </div>
+
+                    <div class="case-carousel fade-in-up" data-case-carousel>
+                        <button class="case-nav case-nav-prev" type="button" aria-label="Previous feature video cases" data-carousel-prev>
+                            <span aria-hidden="true">&lsaquo;</span>
+                        </button>
+                        <div class="case-carousel-viewport" data-empty-label="Feature case coming soon">
+                            <div class="case-grid long-case-grid case-track" data-case-track></div>
+                        </div>
+                        <button class="case-nav case-nav-next" type="button" aria-label="Next feature video cases" data-carousel-next>
+                            <span aria-hidden="true">&rsaquo;</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="long-video" class="section">
+                <div class="container-wide">
+                    <div class="section-header fade-in-up">
+                        <h2>
+                            Minute-Level Generations
+                            <span class="av-badge section-av-badge" aria-label="Audio-video samples">
+                                <svg class="av-badge-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" height="24" width="24" aria-hidden="true"><path fill="currentColor" d="M6.61743 7.57642c0.37364 -0.15469 0.80389 -0.06916 1.08985 0.21679l8.50002 8.49999c0.2858 0.286 0.3715 0.7163 0.2168 1.0899 -0.1548 0.3734 -0.5196 0.617 -0.9239 0.6171h-4.5859l-1.49999 1.5c-0.78094 0.7809 -2.04708 0.7807 -2.82813 0l-2.08594 -2.0859c-0.78094 -0.781 -0.78095 -2.0471 0 -2.8281l1.5 -1.5V8.50024c0 -0.40441 0.24359 -0.76901 0.61719 -0.92382m1.38281 5.92378c-0.00006 0.2652 -0.1055 0.5196 -0.29296 0.7071l-1.79297 1.7929 2.08593 2.086 1.79297 -1.793 0.07325 -0.0664c0.17794 -0.1458 0.40174 -0.2266 0.63374 -0.2266h2.586l-5.08596 -5.0859zm0.50098 -9.7939c3.27128 -1.37885 7.19558 -0.73781 9.86328 1.92969 2.6677 2.66766 3.3095 6.59191 1.9307 9.86331 -0.2146 0.5088 -0.8017 0.7477 -1.3106 0.5332 -0.5085 -0.2146 -0.7472 -0.8009 -0.5332 -1.3096 1.0739 -2.5477 0.5719 -5.59994 -1.501 -7.67285 -2.0728 -2.07265 -5.1243 -2.57469 -7.67184 -1.50098 -0.50888 0.21439 -1.09605 -0.02433 -1.31054 -0.5332 -0.21428 -0.50871 0.0247 -1.09492 0.5332 -1.30957m2.84668 3.8418c1.3581 -0.19803 2.7899 0.22546 3.835 1.2705 1.0448 1.04512 1.4668 2.4761 1.2685 3.834 -0.0536 0.3673 -0.4953 0.4754 -0.7578 0.2129L11.135 8.30591c-0.2623 -0.26241 -0.1541 -0.70403 0.2129 -0.75781"/></svg>
+                                <span>Audio</span>
+                            </span>
+                        </h2>
+                        <p>Five- to six-minute continuous generations with stable appearance and audio-video synchronization.</p>
+                    </div>
+
+                    <div class="case-carousel fade-in-up" data-case-carousel>
+                        <button class="case-nav case-nav-prev" type="button" aria-label="Previous long video cases" data-carousel-prev>
+                            <span aria-hidden="true">&lsaquo;</span>
+                        </button>
+                        <div class="case-carousel-viewport" data-empty-label="Long-form cases coming soon">
+                            <div class="case-grid long-case-grid case-track" data-case-track></div>
+                        </div>
+                        <button class="case-nav case-nav-next" type="button" aria-label="Next long video cases" data-carousel-next>
+                            <span aria-hidden="true">&rsaquo;</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="short-video" class="section section-alt">
+                <div class="container-wide">
+                    <div class="section-header fade-in-up">
+                        <h2>
+                            Short Clips
+                            <span class="av-badge section-av-badge" aria-label="Audio-video samples">
+                                <svg class="av-badge-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" height="24" width="24" aria-hidden="true"><path fill="currentColor" d="M6.61743 7.57642c0.37364 -0.15469 0.80389 -0.06916 1.08985 0.21679l8.50002 8.49999c0.2858 0.286 0.3715 0.7163 0.2168 1.0899 -0.1548 0.3734 -0.5196 0.617 -0.9239 0.6171h-4.5859l-1.49999 1.5c-0.78094 0.7809 -2.04708 0.7807 -2.82813 0l-2.08594 -2.0859c-0.78094 -0.781 -0.78095 -2.0471 0 -2.8281l1.5 -1.5V8.50024c0 -0.40441 0.24359 -0.76901 0.61719 -0.92382m1.38281 5.92378c-0.00006 0.2652 -0.1055 0.5196 -0.29296 0.7071l-1.79297 1.7929 2.08593 2.086 1.79297 -1.793 0.07325 -0.0664c0.17794 -0.1458 0.40174 -0.2266 0.63374 -0.2266h2.586l-5.08596 -5.0859zm0.50098 -9.7939c3.27128 -1.37885 7.19558 -0.73781 9.86328 1.92969 2.6677 2.66766 3.3095 6.59191 1.9307 9.86331 -0.2146 0.5088 -0.8017 0.7477 -1.3106 0.5332 -0.5085 -0.2146 -0.7472 -0.8009 -0.5332 -1.3096 1.0739 -2.5477 0.5719 -5.59994 -1.501 -7.67285 -2.0728 -2.07265 -5.1243 -2.57469 -7.67184 -1.50098 -0.50888 0.21439 -1.09605 -0.02433 -1.31054 -0.5332 -0.21428 -0.50871 0.0247 -1.09492 0.5332 -1.30957m2.84668 3.8418c1.3581 -0.19803 2.7899 0.22546 3.835 1.2705 1.0448 1.04512 1.4668 2.4761 1.2685 3.834 -0.0536 0.3673 -0.4953 0.4754 -0.7578 0.2129L11.135 8.30591c-0.2623 -0.26241 -0.1541 -0.70403 0.2129 -0.75781"/></svg>
+                                <span>Audio</span>
+                            </span>
+                        </h2>
+                        <p>Ten-second clips with stable appearance and lip-sync.</p>
+                    </div>
+
+                    <div class="case-carousel fade-in-up" data-case-carousel>
+                        <button class="case-nav case-nav-prev" type="button" aria-label="Previous short clip cases" data-carousel-prev>
+                            <span aria-hidden="true">&lsaquo;</span>
+                        </button>
+                        <div class="case-carousel-viewport" data-empty-label="Short clips coming soon">
+                            <div class="case-grid case-track" data-case-track></div>
+                        </div>
+                        <button class="case-nav case-nav-next" type="button" aria-label="Next short clip cases" data-carousel-next>
+                            <span aria-hidden="true">&rsaquo;</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="results" class="section">
+                <div class="container-wide">
+                    <div class="section-header fade-in-up">
+                        <h2>Results</h2>
+                        <p>Comparison on the bilingual long-form benchmark against recent audio-video and avatar generators.</p>
+                    </div>
+
+                    <div class="table-card fade-in-up">
+                        <div class="results-caption">
+                            <div class="results-caption-copy">
+                                <h3>Bilingual long-form benchmark</h3>
+                                <p>Best values in bold; our method is highlighted. Higher is better except Desync and Color&Delta;.</p>
+                            </div>
+                        </div>
+                        <div class="table-wrapper">
+                            <table class="results-table">
+                                <thead>
+                                    <tr>
+                                        <th>Method</th>
+                                        <th>Params</th>
+                                        <th>LipSync &uarr;</th>
+                                        <th>Desync &darr;</th>
+                                        <th>Align. &uarr;</th>
+                                        <th>Express. &uarr;</th>
+                                        <th>Long Cons. &uarr;</th>
+                                        <th>Color&Delta; &darr;</th>
+                                        <th>DiT FPS &uarr;</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>OmniAvatar</td>
+                                        <td>1.3B</td>
+                                        <td>4.794</td>
+                                        <td>&ndash;</td>
+                                        <td>&ndash;</td>
+                                        <td>&ndash;</td>
+                                        <td>0.6467</td>
+                                        <td>0.01566</td>
+                                        <td>0.948</td>
+                                    </tr>
+                                    <tr>
+                                        <td>StableAvatar</td>
+                                        <td>1.3B</td>
+                                        <td>3.246</td>
+                                        <td>&ndash;</td>
+                                        <td>&ndash;</td>
+                                        <td>&ndash;</td>
+                                        <td>0.9242</td>
+                                        <td>0.00895</td>
+                                        <td>0.352</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Wan2.2-S2V-14B</td>
+                                        <td>14B</td>
+                                        <td>4.898</td>
+                                        <td>&ndash;</td>
+                                        <td>&ndash;</td>
+                                        <td>&ndash;</td>
+                                        <td>0.8413</td>
+                                        <td>0.00814</td>
+                                        <td>0.079</td>
+                                    </tr>
+                                    <tr>
+                                        <td>LiveAvatar</td>
+                                        <td>14B</td>
+                                        <td>5.396</td>
+                                        <td>&ndash;</td>
+                                        <td>&ndash;</td>
+                                        <td>&ndash;</td>
+                                        <td>0.9619</td>
+                                        <td>0.00541</td>
+                                        <td>4.529</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Hallo3</td>
+                                        <td>5B</td>
+                                        <td>4.855</td>
+                                        <td>&ndash;</td>
+                                        <td>&ndash;</td>
+                                        <td>&ndash;</td>
+                                        <td>0.7947</td>
+                                        <td>0.01383</td>
+                                        <td>0.150</td>
+                                    </tr>
+                                    <tr>
+                                        <td>LTX-2.3 (chunked)</td>
+                                        <td>22B</td>
+                                        <td>2.349</td>
+                                        <td>0.050</td>
+                                        <td>4.35</td>
+                                        <td>3.60</td>
+                                        <td>0.3745</td>
+                                        <td>0.04387</td>
+                                        <td>0.262</td>
+                                    </tr>
+                                    <tr>
+                                        <td>JavisDiT</td>
+                                        <td>2.1B</td>
+                                        <td>0.904</td>
+                                        <td>1.025</td>
+                                        <td>5.00</td>
+                                        <td>3.90</td>
+                                        <td>0.3545</td>
+                                        <td>0.07159</td>
+                                        <td>0.437</td>
+                                    </tr>
+                                    <tr>
+                                        <td>MOVA</td>
+                                        <td>32B/18B</td>
+                                        <td>3.860</td>
+                                        <td>0.060</td>
+                                        <td>5.00</td>
+                                        <td>3.75</td>
+                                        <td>0.7129</td>
+                                        <td>0.02825</td>
+                                        <td>0.128</td>
+                                    </tr>
+                                    <tr>
+                                        <td>OVI</td>
+                                        <td>11B</td>
+                                        <td>3.493</td>
+                                        <td>0.135</td>
+                                        <td>4.60</td>
+                                        <td>3.70</td>
+                                        <td>0.8252</td>
+                                        <td>0.01797</td>
+                                        <td>0.231</td>
+                                    </tr>
+                                    <tr class="row-ours">
+                                        <td>TaoMate (Ours)</td>
+                                        <td>22.1B</td>
+                                        <td><strong>5.773</strong></td>
+                                        <td><strong>0.000</strong></td>
+                                        <td><strong>5.00</strong></td>
+                                        <td><strong>4.00</strong></td>
+                                        <td><strong>0.9520</strong></td>
+                                        <td><strong>0.00483</strong></td>
+                                        <td><strong>16.32</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="table-note">
+                            Params denotes denoising-generator size, with MOVA shown as total/active parameters.
+                            DiT FPS excludes data loading, VAE decoding, and post-processing. Dashes denote
+                            unavailable measurements.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="bibtex" class="section section-alt">
+                <div class="container">
+                    <div class="section-header fade-in-up">
+                        <h2>BibTeX</h2>
+                    </div>
+                    <div class="bibtex-card fade-in-up">
+                        <button class="bibtex-copy" type="button" data-copy-bibtex>Copy</button>
+                        <pre><code>@misc{taomate2026streaming,
+  title  = {TaoMate: Anchor-Guided Memory Bridging Evolving and Reference
+            States for Real-Time Audio-Video Digital Human Generation},
+  author = {Gan, Qijun and Zhang, Chenwei and Jin, Meiguang and Ma, Junfeng
+            and Shen, Qiu},
+  year   = {2026}
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 TaoMate Team. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div class="modal" aria-hidden="true" role="dialog" aria-label="Video preview">
+        <div class="modal-backdrop" data-close-modal></div>
+        <div class="modal-window">
+            <button class="modal-close" type="button" aria-label="Close preview" data-close-modal></button>
+            <video class="modal-video" controls playsinline></video>
+            <div class="modal-copy">
+                <h3></h3>
+                <p></p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,528 @@
+/* TaoMate theme: warm-white + orange, centered hero, restructured layouts.
+   Loaded after echo-page.css / gallery-mode.css and overrides them. */
+
+/* ---------- Navigation with brand ---------- */
+.video-bg-page .site-nav {
+    grid-template-columns: minmax(120px, 1fr) auto minmax(120px, 1fr);
+}
+
+.nav-brand {
+    grid-column: 1;
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 6px 4px;
+    color: var(--text);
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+}
+
+.nav-brand::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, var(--red), #ffb066);
+    box-shadow: 0 4px 12px rgba(249, 109, 0, .4);
+    transform: rotate(45deg);
+}
+
+.video-bg-page .site-nav {
+    background: rgba(255, 252, 247, .82);
+    border: 1px solid var(--panel-border);
+    box-shadow: 0 14px 44px rgba(122, 62, 0, .12);
+}
+
+/* ---------- Centered hero ---------- */
+.video-bg-page .hero-centered {
+    position: relative;
+    z-index: 1;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 148px 24px 96px;
+    text-align: center;
+}
+
+.hero-inner {
+    width: min(1020px, 100%);
+    margin: 0 auto;
+}
+
+.hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 26px;
+    padding: 8px 18px;
+    border: 1px solid rgba(249, 109, 0, .4);
+    border-radius: 999px;
+    color: var(--red);
+    background: rgba(255, 255, 255, .7);
+    box-shadow: 0 10px 28px rgba(122, 62, 0, .08);
+    font-family: "JetBrains Mono", monospace;
+    font-size: .8rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.hero-eyebrow::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--red);
+    animation: heroPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes heroPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .45; transform: scale(.72); }
+}
+
+.hero-title {
+    margin: 0;
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: clamp(4.2rem, 12vw, 9.6rem);
+    font-weight: 700;
+    line-height: .95;
+    letter-spacing: .01em;
+    background: linear-gradient(100deg, #f96d00 12%, #ff9e50 48%, #d44e00 88%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero-subtitle {
+    max-width: 880px;
+    margin: 22px auto 0;
+    color: var(--text);
+    font-size: clamp(1.08rem, 2vw, 1.5rem);
+    font-weight: 700;
+    line-height: 1.42;
+}
+
+/* author block directly under the paper title in the hero */
+.hero-authors {
+    max-width: 880px;
+    margin: 22px auto 0;
+    color: var(--text);
+    font-size: clamp(1rem, 1.8vw, 1.22rem);
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+/* author links (Google Scholar) */
+.hero-authors .author-link {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px dashed rgba(249, 109, 0, .45);
+    transition: color .2s, border-color .2s;
+}
+
+.hero-authors .author-link:hover {
+    color: var(--red);
+    border-bottom-color: var(--red);
+}
+
+.hero-authors sup,
+.hero-affiliations sup {
+    color: var(--red);
+    font-size: .72em;
+    font-weight: 700;
+}
+
+.hero-affiliations {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px 26px;
+    margin: 8px auto 0;
+    color: var(--text-soft);
+    font-size: clamp(.92rem, 1.5vw, 1.05rem);
+}
+
+.hero-typewriter {
+    min-height: 1.7em;
+    margin: 20px auto 0;
+    color: var(--red-soft);
+    font-family: "JetBrains Mono", monospace;
+    font-size: clamp(.98rem, 1.6vw, 1.28rem);
+    font-weight: 700;
+}
+
+.hero-typewriter .typewriter-caret {
+    background: var(--red);
+}
+
+.hero-copy {
+    max-width: 700px;
+    margin: 20px auto 0;
+    color: var(--text-soft);
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.hero-centered .hero-actions {
+    justify-content: center;
+    margin-top: 34px;
+}
+
+.hero-centered .btn-secondary {
+    border-color: rgba(32, 23, 18, .2);
+    color: var(--text);
+    background: rgba(255, 255, 255, .78);
+}
+
+.hero-centered .btn-secondary:hover {
+    border-color: var(--red);
+    background: var(--red-wash);
+}
+
+/* stat strip: horizontal with dividers, not boxed cards */
+.hero-stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 58px auto 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+}
+
+.hero-stats > div {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 22px clamp(14px, 2.5vw, 40px);
+}
+
+.hero-stats > div + div {
+    border-left: 1px solid var(--line);
+}
+
+.hero-stats strong {
+    display: block;
+    color: var(--red);
+    font-family: "JetBrains Mono", monospace;
+    font-size: clamp(1.6rem, 3vw, 2.3rem);
+    line-height: 1;
+}
+
+.hero-stats span {
+    display: block;
+    margin-top: 9px;
+    color: var(--text-soft);
+    font-size: .86rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+/* scroll hint at hero bottom */
+.hero-scroll-hint {
+    position: absolute;
+    left: 50%;
+    bottom: 30px;
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    transform: translateX(-50%);
+    color: var(--muted);
+    font-family: "JetBrains Mono", monospace;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.hero-scroll-hint::after {
+    content: "";
+    width: 1px;
+    height: 34px;
+    background: linear-gradient(180deg, var(--red), transparent);
+    animation: heroHintDrop 1.6s ease-in-out infinite;
+}
+
+@keyframes heroHintDrop {
+    0% { transform: scaleY(.3); transform-origin: top; opacity: .4; }
+    55% { transform: scaleY(1); opacity: 1; }
+    100% { transform: scaleY(.3); transform-origin: top; opacity: .4; }
+}
+
+/* ---------- Section headers: left-aligned with index bar ---------- */
+.video-bg-page .section-header {
+    max-width: none;
+    margin: 0 0 34px;
+    text-align: left;
+}
+
+.video-bg-page .content-scroll-shell .section-header h2 {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--text);
+    font-family: "Space Grotesk", Inter, sans-serif;
+    letter-spacing: .01em;
+}
+
+.video-bg-page .content-scroll-shell .section-header h2::before {
+    content: "";
+    flex: 0 0 auto;
+    width: 8px;
+    height: 30px;
+    border-radius: 4px;
+    background: linear-gradient(180deg, var(--red), #ffb066);
+}
+
+.video-bg-page .section-header p:last-child {
+    margin: 12px 0 0;
+}
+
+/* gallery headers used ID selectors in gallery-mode.css; reset to the new style */
+.video-bg-page #long-video .section-header h2,
+.video-bg-page #short-video .section-header h2 {
+    display: flex;
+    text-align: left;
+}
+
+/* av badge sits inline again (headers are left-aligned now) */
+.video-bg-page .section-av-badge {
+    position: static;
+    margin: 0;
+    transform: none;
+}
+
+.video-bg-page .av-badge {
+    color: var(--red);
+    background: rgba(249, 109, 0, .1);
+    border-color: rgba(249, 109, 0, .35);
+    box-shadow: none;
+}
+
+.video-bg-page .av-badge-icon {
+    color: var(--red);
+}
+
+/* ---------- Overview: abstract + glance card ---------- */
+.overview-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(280px, .75fr);
+    gap: 30px;
+    align-items: start;
+}
+
+.overview-grid .abstract-text {
+    margin: 0;
+    max-width: none;
+    text-align: left;
+}
+
+.glance-card {
+    border: 1px solid var(--panel-border);
+    border-radius: 16px;
+    background: linear-gradient(180deg, #ffffff, #fff7ec);
+    box-shadow: 0 18px 48px rgba(122, 62, 0, .1);
+    overflow: hidden;
+}
+
+.glance-card h3 {
+    margin: 0;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--line);
+    color: var(--text);
+    font-size: .82rem;
+    font-weight: 800;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+}
+
+.glance-card dl {
+    margin: 0;
+    padding: 8px 24px 20px;
+}
+
+.glance-card div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 13px 0;
+    border-bottom: 1px dashed var(--line);
+}
+
+.glance-card div:last-child {
+    border-bottom: 0;
+}
+
+.glance-card dt {
+    color: var(--text-soft);
+    font-size: .88rem;
+    font-weight: 600;
+}
+
+.glance-card dd {
+    margin: 0;
+    color: var(--red);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 1.05rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* ---------- Method: three pillar cards ---------- */
+.method-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.method-card {
+    position: relative;
+    padding: 30px 26px 26px;
+    border: 1px solid var(--panel-border);
+    border-radius: 16px;
+    background: linear-gradient(180deg, #ffffff, #fff9f1);
+    box-shadow: 0 14px 40px rgba(122, 62, 0, .08);
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    overflow: hidden;
+}
+
+.method-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--red), transparent 70%);
+    opacity: 0;
+    transition: opacity .2s ease;
+}
+
+.method-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(249, 109, 0, .45);
+    box-shadow: 0 24px 60px rgba(122, 62, 0, .16);
+}
+
+.method-card:hover::after {
+    opacity: 1;
+}
+
+.method-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    color: var(--red);
+    background: var(--red-wash);
+    font-family: "JetBrains Mono", monospace;
+    font-size: .74rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.method-card h3 {
+    margin: 0;
+    color: var(--text);
+    font-size: 1.22rem;
+    line-height: 1.3;
+}
+
+.method-card p {
+    margin: 14px 0 0;
+    color: var(--text-soft);
+    font-size: .95rem;
+    line-height: 1.7;
+}
+
+/* ---------- Gallery placeholders on light bg ---------- */
+.video-bg-page .case-carousel.is-empty .case-carousel-viewport {
+    border: 1px dashed rgba(249, 109, 0, .4);
+    border-radius: 16px;
+    background: rgba(249, 109, 0, .05);
+}
+
+.video-bg-page .case-carousel.is-empty .case-carousel-viewport::before {
+    color: var(--muted);
+}
+
+.video-bg-page .case-nav {
+    box-shadow: 0 10px 26px rgba(249, 109, 0, .34);
+}
+
+.video-bg-page .case-carousel-status {
+    border-color: rgba(249, 109, 0, .4);
+}
+
+/* ---------- Results table tweaks ---------- */
+.results-table thead th {
+    background: linear-gradient(90deg, #f96d00, #ff8a34);
+}
+
+.results-table tbody tr:nth-child(2n) {
+    background: #fff7ec;
+}
+
+.results-table .row-ours {
+    background: rgba(249, 109, 0, .12);
+}
+
+.table-note {
+    margin: 16px 4px 0;
+    color: var(--muted);
+    font-size: .84rem;
+    line-height: 1.6;
+}
+
+/* ---------- Footer ---------- */
+.video-bg-page .footer {
+    background: linear-gradient(90deg, #f96d00, #ff8a34);
+    min-height: 160px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 980px) {
+    .overview-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .method-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-stats > div + div {
+        border-left: 0;
+    }
+
+    .hero-stats > div {
+        flex: 1 1 40%;
+        padding: 18px 16px;
+    }
+}
+
+@media (max-width: 900px) {
+    .video-bg-page .site-nav {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .nav-brand {
+        grid-column: 1;
+    }
+
+    .hero-centered {
+        padding: 120px 20px 80px;
+    }
+
+    .hero-title {
+        font-size: clamp(3.4rem, 16vw, 6rem);
+    }
+}
