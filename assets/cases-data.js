@@ -14,6 +14,13 @@ window.ECHO_CASE_MANIFEST = {
         ],
         long: [
             {
+                title: "Cartoon Panda (5 min)",
+                description: "Five-minute stylized character generation — consistency holds beyond realistic humans.",
+                src: "./assets/cases/long/cartoon-panda-5min.mp4",
+                poster: "",
+                type: "video/mp4"
+            },
+            {
                 title: "Botanical Illustrator (6 min)",
                 description: "Six-minute continuous generation with stable appearance and audio-video synchronization.",
                 src: "./assets/cases/long/botanical-illustrator-6min.mp4",
@@ -47,16 +54,16 @@ window.ECHO_CASE_MANIFEST = {
                 src: "./assets/cases/long/cockpit-simulator-5min.mp4",
                 poster: "",
                 type: "video/mp4"
-            },
-            {
-                title: "Cartoon Panda (5 min)",
-                description: "Five-minute stylized character generation — consistency holds beyond realistic humans.",
-                src: "./assets/cases/long/cartoon-panda-5min.mp4",
-                poster: "",
-                type: "video/mp4"
             }
         ],
         short: [
+            {
+                title: "Clay Robot",
+                description: "Ten-second stylized character clip with stable appearance and lip-sync.",
+                src: "./assets/cases/short/clay-robot-10s.mp4",
+                poster: "",
+                type: "video/mp4"
+            },
             {
                 title: "Riverside Cyclist",
                 description: "Ten-second clip with stable appearance and lip-sync.",
@@ -75,13 +82,6 @@ window.ECHO_CASE_MANIFEST = {
                 title: "Harbor Reporter",
                 description: "Ten-second clip with stable appearance and lip-sync.",
                 src: "./assets/cases/short/harbor-reporter-10s.mp4",
-                poster: "",
-                type: "video/mp4"
-            },
-            {
-                title: "Clay Robot",
-                description: "Ten-second stylized character clip with stable appearance and lip-sync.",
-                src: "./assets/cases/short/clay-robot-10s.mp4",
                 poster: "",
                 type: "video/mp4"
             }
