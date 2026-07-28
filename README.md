@@ -9,7 +9,7 @@
     Chenwei Zhang,&emsp;
     <a href='https://scholar.google.com/citations?user=oi1LErsAAAAJ&hl=en' target='_blank'>Meiguang Jin</a>†,&emsp;
     Junfeng Ma,&emsp;
-    <a href='https://scholar.google.com/citations?user=cFS40tMAAAAJ&hl=en&oi=sra' target='_blank'>Qiu Shen</a>,&emsp;
+    <a href='https://scholar.google.com/citations?user=cFS40tMAAAAJ&hl=en&oi=sra' target='_blank'>Qiu Shen</a>&emsp;
 </div>
 <div>
     Alibaba Group - Taobao & Tmall Group
@@ -323,7 +323,15 @@ taomate/inference/            TaoMate inference runtime
 The official BibTeX entry will be added here upon release.
 
 ```bibtex
-% BibTeX entry coming soon.
+@misc{taomate2026,
+      title={TaoMate: Anchor-Guided Memory Bridging Evolving and Reference States for Real-Time Audio-Video Digital Human Generation}, 
+      author={Qijun Gan and Chenwei Zhang and Meiguang Jin and Junfeng Ma and Qiu Shen},
+      year={2026},
+      eprint={2607.24359},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2607.24359}, 
+}
 ```
 
 ## License
