@@ -21,9 +21,11 @@
 <a href='https://arxiv.org/pdf/2607.24359' target='_blank'>Paper</a> | <a href='https://taoliveaigc.github.io/TaoMate' target='_blank'> Project Page</a> | <a href='https://huggingface.co/TaoLiveAIGC/TaoMate' target='_blank'>Model</a>
 
 
-<div style="width: 100%; text-align: center; margin:auto;">
-    <img style="width:100%" src="assets/TaoMate_teaser.png">
-</div>
+
+
+https://github.com/user-attachments/assets/4d2027de-49f2-433f-8c01-9345581640d5
+
+
 </div>
 TaoMate is a real-time digital-human model for long-form audio-video generation. This repository provides the inference runtime, multi-GPU launchers, and the full interactive browser demo backed by a resident model worker.
 
