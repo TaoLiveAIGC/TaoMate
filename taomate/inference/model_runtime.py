@@ -201,13 +201,11 @@ def load_model_generator(
     learned_memory_heads: int = 8,
     learned_memory_color_film: bool = False,
     learned_memory_color_film_hidden_dim: int = 256,
-    use_mmap: bool = False,
-    use_ema: bool = False,
-) -> Tuple[CausalLTX2DiffusionWrapper, int]:
+) -> CausalLTX2DiffusionWrapper:
     """
     Load TaoMate causal generator.
 
-    TaoMate checkpoint structure: {"generator": state_dict, "critic": ..., "step": int}
+    TaoMate checkpoint structure: {"generator_ema": state_dict}
     Generator keys are in ``model.*`` format (CausalLTX2DiffusionWrapper).
 
     Missing from TaoMate checkpoint (loaded from original_ckpt_path):
@@ -215,31 +213,22 @@ def load_model_generator(
 
     Args:
     Returns:
-        (generator_wrapper, training_step)
+        generator_wrapper
     """
     import gc
 
     print(f"[Load] TaoMate checkpoint: {model_ckpt_path}")
-    _load_kw = dict(map_location="cpu")
-    if use_mmap:
-        _load_kw["mmap"] = True
-        print("[Load] Using mmap=True (memory-mapped, low RAM footprint)")
-    ckpt = torch.load(model_ckpt_path, **_load_kw)
+    print("[Load] Using memory-mapped EMA weights")
+    ckpt = torch.load(
+        model_ckpt_path,
+        map_location="cpu",
+        mmap=True,
+        weights_only=True,
+    )
+    if not isinstance(ckpt, dict) or "generator_ema" not in ckpt:
+        raise ValueError("Expected a TaoMate EMA checkpoint.")
+    gen_sd = ckpt["generator_ema"]
 
-    if isinstance(ckpt, dict) and "generator" in ckpt:
-        if use_ema and "generator_ema" in ckpt:
-            gen_sd = ckpt["generator_ema"]
-            print(f"[Load] Using EMA weights (generator_ema)")
-        else:
-            gen_sd = ckpt["generator"]
-        train_step = ckpt.get("step", -1)
-        print(f"[Load] Training step: {train_step}")
-    else:
-        gen_sd = ckpt
-        train_step = -1
-        print("[Load] Warning: no 'generator' key, using raw state_dict")
-
-    # Free the full checkpoint immediately (critic state_dict can be ~44GB)
     del ckpt
     gc.collect()
 
@@ -433,7 +422,7 @@ def load_model_generator(
         print(f"[Load] Unexpected keys: {len(unexpected)}")
 
     wrapper.eval()
-    return wrapper, train_step
+    return wrapper
 
 
 # ═══════════════════════════════════════════════════════════════════════════

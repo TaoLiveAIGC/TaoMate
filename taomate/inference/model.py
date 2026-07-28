@@ -24,7 +24,7 @@ def load_generator(
     video_height: int,
     video_width: int,
     dtype: torch.dtype,
-) -> Tuple[CausalLTX2DiffusionWrapper, int]:
+) -> CausalLTX2DiffusionWrapper:
     from taomate.inference.model_runtime import load_model_generator
 
     return load_model_generator(
@@ -47,8 +47,6 @@ def load_generator(
         learned_memory_heads=8,
         learned_memory_color_film=True,
         learned_memory_color_film_hidden_dim=256,
-        use_mmap=True,
-        use_ema=True,
     )
 
 class StreamingGenerator:

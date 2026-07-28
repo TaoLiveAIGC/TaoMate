@@ -17,3 +17,6 @@ logs/
 *.log
 *.npz
 *.npy
+
+!assets/interactive_demo.mp4
+!assets/interactive_demo.jpg

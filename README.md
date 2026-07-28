@@ -5,9 +5,9 @@
 </h1>
 
 <div>
-    <a href='https://scholar.google.com/citations?user=qZvhvPcAAAAJ&hl=en' target='_blank'>Qijun Gan</a>,&emsp;
+    <a href='https://scholar.google.com/citations?user=qZvhvPcAAAAJ&hl=en' target='_blank'>Qijun Gan</a>*,&emsp;
     Chenwei Zhang,&emsp;
-    <a href='https://scholar.google.com/citations?user=oi1LErsAAAAJ&hl=en' target='_blank'>Meiguang Jin</a>*,&emsp;
+    <a href='https://scholar.google.com/citations?user=oi1LErsAAAAJ&hl=en' target='_blank'>Meiguang Jin</a>†,&emsp;
     Junfeng Ma,&emsp;
     <a href='https://scholar.google.com/citations?user=cFS40tMAAAAJ&hl=en&oi=sra' target='_blank'>Qiu Shen</a>,&emsp;
 </div>
@@ -15,11 +15,10 @@
     Alibaba Group - Taobao & Tmall Group
 </div>
 <div>
-    * Corresponding author
+    * Project leader, † Corresponding author
 </div>
 
-<a href='' target='_blank'>Paper</a> | 
-<a href='' target='_blank'>Project Page</a>
+<a href='https://arxiv.org/pdf/2607.24359' target='_blank'>Paper</a> | <a href='https://taoliveaigc.github.io/TaoMate' target='_blank'> Project Page</a> | <a href='https://huggingface.co/TaoLiveAIGC/TaoMate' target='_blank'>Model</a>
 
 
 <div style="width: 100%; text-align: center; margin:auto;">
@@ -27,6 +26,12 @@
 </div>
 </div>
 TaoMate is a real-time digital-human model for long-form audio-video generation. This repository provides the inference runtime, multi-GPU launchers, and the full interactive browser demo backed by a resident model worker.
+
+## Interactive Demo
+
+[![Watch the TaoMate interactive demo](assets/interactive_demo.jpg)](assets/interactive_demo.mp4)
+
+Click the preview to watch the full interactive demo.
 
 ## Requirements
 
@@ -36,7 +41,7 @@ TaoMate is a real-time digital-human model for long-form audio-video generation.
 - One or two CUDA-capable NVIDIA GPUs for batch inference; four for the interactive demo
 - NVIDIA driver compatible with CUDA 12.8
 
-The reference 512x768 batch configuration has been validated on 72 GB GPUs. The interactive demo has been validated with 96 GB of VRAM per GPU.
+The reference 512x768 batch configuration and interactive demo have been validated on 72 GB GPUs.
 
 ## Installation
 
@@ -71,7 +76,7 @@ Command-line inference requires the TaoMate checkpoint, the LTX-2.3 base model, 
 
 | Variable | Contents |
 | --- | --- |
-| `MODEL_CKPT` | TaoMate `model.pt` containing `generator_ema` weights |
+| `MODEL_CKPT` | TaoMate `model.pt` from [TaoLiveAIGC/TaoMate](https://huggingface.co/TaoLiveAIGC/TaoMate) |
 | `BASE_MODEL_CKPT` | LTX-2.3 `ltx-2.3-22b-dev.safetensors` checkpoint |
 | `GEMMA_PATH` | Gemma 3 12B IT directory containing `config.json`, `preprocessor_config.json`, `tokenizer.model`, and `model*.safetensors` |
 
@@ -85,10 +90,27 @@ Install the official Hugging Face CLI, sign in, and create the local model direc
 python -m pip install --upgrade huggingface_hub
 hf auth login
 
-mkdir -p models/ltx-2.3 models/gemma-3-12b-it
+mkdir -p models/taomate models/ltx-2.3 models/gemma-3-12b-it
 ```
 
 Accept the access terms on the [Gemma 3 12B IT model page](https://huggingface.co/google/gemma-3-12b-it) before downloading it. Review the license shown on every upstream model page before use.
+
+### TaoMate Checkpoint
+
+Download the TaoMate checkpoint and release manifest from [TaoLiveAIGC/TaoMate](https://huggingface.co/TaoLiveAIGC/TaoMate):
+
+```bash
+hf download TaoLiveAIGC/TaoMate model.pt \
+  --local-dir models/taomate
+hf download TaoLiveAIGC/TaoMate manifest.json \
+  --local-dir models/taomate
+
+echo "fb2b0ec8b709cfb27400c928930ab982940489fea6893e423851c41b8deb39be  models/taomate/model.pt" \
+  | sha256sum --check
+test -s models/taomate/manifest.json
+```
+
+Set `MODEL_CKPT` to `models/taomate/model.pt`.
 
 ### LTX-2.3 Base Model
 
@@ -122,10 +144,10 @@ Set `GEMMA_PATH` to the directory itself, not to an individual shard.
 
 ### Inference Paths
 
-After downloading the TaoMate checkpoint from its release page, the expected paths are:
+After downloading all required models, configure the model paths:
 
 ```bash
-export MODEL_CKPT=/absolute/path/to/TaoMate/model.pt
+export MODEL_CKPT=$PWD/models/taomate/model.pt
 export BASE_MODEL_CKPT=$PWD/models/ltx-2.3/ltx-2.3-22b-dev.safetensors
 export GEMMA_PATH=$PWD/models/gemma-3-12b-it
 ```
@@ -141,7 +163,7 @@ Inference accepts a JSON list. Each case requires a unique `case_id` and 1 to 12
     "description": "studio presenter",
     "segments": [
       {
-        "prompt": "Static medium close-up shot of a presenter speaking naturally to the camera.",
+        "prompt": "Eye-level tight medium close-up of a presenter speaking naturally to the camera.",
         "seed": 1001
       }
     ]
@@ -168,7 +190,7 @@ Both launchers create the prompt cache automatically when `PROMPT_CACHE` points 
 The single-GPU launcher loads the complete generator on one device.
 
 ```bash
-MODEL_CKPT=/path/to/TaoMate/model.pt \
+MODEL_CKPT=$PWD/models/taomate/model.pt \
 BASE_MODEL_CKPT=$PWD/models/ltx-2.3/ltx-2.3-22b-dev.safetensors \
 GEMMA_PATH=$PWD/models/gemma-3-12b-it \
 BENCHMARK_JSON=configs/inference/benchmark_1min_windowed.json \
@@ -184,7 +206,7 @@ bash scripts/inference/run_taomate_1gpu.sh
 The two-GPU launcher splits the generator across both devices.
 
 ```bash
-MODEL_CKPT=/path/to/TaoMate/model.pt \
+MODEL_CKPT=$PWD/models/taomate/model.pt \
 BASE_MODEL_CKPT=$PWD/models/ltx-2.3/ltx-2.3-22b-dev.safetensors \
 GEMMA_PATH=$PWD/models/gemma-3-12b-it \
 BENCHMARK_JSON=configs/inference/benchmark_1min_windowed.json \
@@ -196,9 +218,9 @@ MAX_CASES=1 \
 bash scripts/inference/run_taomate_2gpu.sh
 ```
 
-Completed videos are written to `OUTPUT_DIR` as `<case_id>_step<checkpoint_step>.mp4`.
+Completed videos are written to `OUTPUT_DIR` as `<case_id>.mp4`.
 
-## Interactive Demo
+## Interactive Demo Deployment
 
 The demo uses exactly four GPUs. GPUs 0-1 run the distributed generator, GPU 2 handles text conditioning and media decoding, and GPU 3 runs the local dialogue model together with lightweight ASR. The launcher starts the dialogue server, resident inference worker, and web service in separate tmux sessions.
 
@@ -256,7 +278,7 @@ Runtime downloads are disabled in the demo, so `ASR_MODEL_PATH` must point to th
 ### Start the Demo
 
 ```bash
-MODEL_CKPT=/path/to/TaoMate/model.pt \
+MODEL_CKPT=$PWD/models/taomate/model.pt \
 BASE_MODEL_CKPT=$PWD/models/ltx-2.3/ltx-2.3-22b-dev.safetensors \
 GEMMA_PATH=$PWD/models/gemma-3-12b-it \
 DIALOGUE_MODEL_PATH=$PWD/models/dialogue/gemma-4-26B-A4B-it-UD-Q4_K_M.gguf \

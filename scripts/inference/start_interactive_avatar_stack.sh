@@ -46,6 +46,10 @@ for command in tmux curl; do
     exit 2
   fi
 done
+if ! "${PYTHON_BIN}" -c "import whisper" >/dev/null 2>&1; then
+  echo "Python package openai-whisper is required. Run: ${PYTHON_BIN} -m pip install -r requirements.txt" >&2
+  exit 2
+fi
 
 IFS=',' read -r -a WORKER_GPU_IDS <<< "${AVATAR_WORKER_CUDA_VISIBLE_DEVICES}"
 if [ "${#WORKER_GPU_IDS[@]}" -ne 4 ]; then

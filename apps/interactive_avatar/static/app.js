@@ -45,6 +45,369 @@ const demoLiveBtn = document.getElementById("demoLiveBtn");
 const demoDrawer = document.getElementById("demoDrawer");
 const historyList = document.getElementById("historyList");
 const historyCount = document.getElementById("historyCount");
+const languageButtons = Array.from(document.querySelectorAll("[data-ui-language]"));
+
+const UI_LANGUAGE_STORAGE_KEY = "taomate_ui_language";
+const I18N = {
+  en: {
+    "app.subtitle": "Real-time Digital Human",
+    "language.label": "Interface language",
+    "header.newSession": "New session",
+    "controls.input": "Input controls",
+    "role.label": "Role",
+    "role.clear": "Clear",
+    "settings.label": "Generation settings",
+    "mode.label": "Mode",
+    "mode.text": "Text",
+    "mode.firstFrame": "First frame",
+    "mode.firstFrameSoon": "First-frame input is coming soon",
+    "aspect.label": "Aspect ratio",
+    "aspect.landscape": "Landscape",
+    "aspect.portrait": "Portrait",
+    "scene.summary": "Scene description",
+    "scene.label": "Character and scene",
+    "scene.placeholder": "Describe the person, lighting, and background",
+    "conversation.label": "Conversation",
+    "conversation.placeholder": "Enter what you want to say",
+    "actions.preview": "Preview prompt",
+    "actions.start": "Start conversation",
+    "actions.cancel": "Cancel",
+    "stage.video": "Video playback",
+    "stage.liveVideo": "Live video",
+    "stage.waitingToStart": "Waiting to start",
+    "stage.liveConversation": "Live conversation",
+    "playback.progress": "Playback progress",
+    "playback.play": "Play",
+    "playback.pause": "Pause",
+    "playback.replay": "Replay",
+    "playback.returnLive": "Return to live",
+    "demo.reference": "Reference demos",
+    "demo.empty": "No demos yet",
+    "demo.loading": "Loading demo",
+    "demo.waitingTitle": "Waiting for demos",
+    "demo.waitingLine": "Waiting for demo dialogue",
+    "demo.preparingLine": "Demo dialogue is loading",
+    "demo.emptyCaption": "Completed demos will appear here.",
+    "demo.previewMain": "Preview on main stage",
+    "demo.livePreview": "Demo live preview",
+    "demo.view": "View",
+    "demo.collapse": "Collapse",
+    "inspector.label": "History and debug",
+    "history.label": "History",
+    "history.count": "{count} turns",
+    "history.none": "No history yet",
+    "history.untitled": "Untitled session",
+    "history.realtime": "Live conversation",
+    "history.archived": "Previous session",
+    "history.currentPrefix": "Current",
+    "history.meta": "{time} · {count} turns · {seconds}s",
+    "history.review": "Review",
+    "history.current": "Current",
+    "history.continue": "Continue",
+    "history.turn": "Turn {number}",
+    "history.saved": "Saved",
+    "debug.label": "Debug details",
+    "debug.expand": "Expand",
+    "debug.reply": "Model reply",
+    "debug.segments": "Segments",
+    "debug.log": "Runtime log",
+    "debug.viewPrompt": "View generated prompt",
+    "segment.title": "Segment {number}",
+    "segment.waiting": "Waiting",
+    "reply.waiting": "Waiting for reply",
+    "reply.generating": "The dialogue model is preparing a short reply.",
+    "status.ready": "READY",
+    "status.onAir": "ON AIR",
+    "status.starting": "STARTING",
+    "status.busy": "BUSY",
+    "status.error": "ERROR",
+    "status.offline": "OFFLINE",
+    "phase.idle": "Waiting for input",
+    "phase.preview_ready": "Storyboard ready",
+    "phase.preview_failed": "Preview failed",
+    "phase.llm_replying": "Thinking",
+    "phase.prompt_expanding": "Preparing response",
+    "phase.queued_on_gpu": "Connecting compute",
+    "phase.queued": "Connecting compute",
+    "phase.accepted": "Connecting",
+    "phase.worker_warming_model": "Warming up",
+    "phase.worker_running": "Generating first frame",
+    "phase.running": "Generating first frame",
+    "phase.generating": "Generating first frame",
+    "phase.streaming": "Live conversation",
+    "phase.succeeded": "Conversation complete",
+    "phase.failed": "Generation failed",
+    "phase.canceled": "Canceled",
+    "phase.expired": "Session expired",
+    "phase.new_conversation": "New session ready",
+    "phase.uploading": "Connecting",
+    "phase.previewing_prompt": "Preparing storyboard",
+    "phase.input_required": "First frame required",
+    "live.firstFrameReady": "First frame ready · Connecting live stream",
+    "live.firstFrameConnecting": "Connecting first frame",
+    "live.newScene": "Preparing new scene · Waiting for live stream",
+    "live.waitingConnect": "Waiting to connect",
+    "live.idleBridge": "Live idle view · Connecting generation stream",
+    "live.idle": "Live idle",
+    "live.connecting": "Connecting generation stream",
+    "live.continuationFrame": "Holding previous frame · Connecting new live stream",
+    "live.continuation": "Connecting new live stream",
+    "live.continuing": "Continuing",
+    "live.waiting": "Waiting for live stream",
+    "live.reviewFull": "Reviewing full video",
+    "live.reviewBuffer": "Reviewing live buffer",
+    "live.ready": "Live video ready · This turn {current}s · Total {total}s",
+    "live.buffering": "Buffering live video · This turn {current}s · Total {total}s",
+    "live.waitingFrame": "Live · Waiting for frames · Total {total}s",
+    "live.preloaded": "Live · Total {total}s · Preloaded {buffered}s",
+    "live.waitingMore": "Live · Total {total}s · Waiting for frames",
+    "live.clickStart": "Click the video to start · Total {total}s",
+    "live.clickSound": "Click the video to enable sound · Total {total}s",
+    "live.ended": "Live ended · About {total}s",
+    "live.finalReady": "Full video ready",
+    "live.review": "Review",
+    "live.complete": "Complete {total}s",
+    "live.added": "Live +{total}s",
+    "error.generationFailed": "Generation did not succeed. Check the scene and conversation, then retry. Details are in the debug log.",
+    "error.interruptedRetry": "Generation stopped. The current frame is preserved, so you can retry this turn.",
+    "error.interruptedRestart": "Generation stopped. Please retry, or choose another role and start again.",
+    "error.submitFailed": "Submission failed. Check the scene and conversation, then retry.",
+    "gpu.unknown": "Compute unknown",
+    "gpu.unavailable": "GPU status unavailable: {error}",
+    "gpu.online": "Compute online",
+    "gpu.ready": "Compute ready",
+    "template.home.title": "Home Explainer",
+    "template.home.role": "Young man · Contemporary home office",
+    "template.tech.title": "Technology Presenter",
+    "template.tech.role": "Young man · Professional technology studio",
+    "template.business.title": "Business Consultant",
+    "template.business.role": "Mature woman · Executive meeting room",
+    "template.education.title": "Course Instructor",
+    "template.education.role": "Young woman · Bright classroom corner",
+    "template.wellness.title": "Wellness Host",
+    "template.wellness.role": "Older man · Contemporary wellness studio",
+  },
+  zh: {
+    "app.subtitle": "实时数字人",
+    "language.label": "界面语言",
+    "header.newSession": "新会话",
+    "controls.input": "输入控制",
+    "role.label": "角色",
+    "role.clear": "清除",
+    "settings.label": "生成设置",
+    "mode.label": "模式",
+    "mode.text": "文本",
+    "mode.firstFrame": "首帧",
+    "mode.firstFrameSoon": "首帧功能正在路上",
+    "aspect.label": "画幅",
+    "aspect.landscape": "横屏",
+    "aspect.portrait": "竖屏",
+    "scene.summary": "场景描述",
+    "scene.label": "角色与场景",
+    "scene.placeholder": "描述人物、光线和背景",
+    "conversation.label": "对话内容",
+    "conversation.placeholder": "输入你想说的话",
+    "actions.preview": "预览提示词",
+    "actions.start": "开始通话",
+    "actions.cancel": "取消",
+    "stage.video": "视频播放",
+    "stage.liveVideo": "直播画面",
+    "stage.waitingToStart": "等待开始",
+    "stage.liveConversation": "实时通话中",
+    "playback.progress": "播放进度",
+    "playback.play": "播放",
+    "playback.pause": "暂停",
+    "playback.replay": "重播",
+    "playback.returnLive": "返回直播",
+    "demo.reference": "参考样例",
+    "demo.empty": "暂无样例",
+    "demo.loading": "样例加载中",
+    "demo.waitingTitle": "等待样例",
+    "demo.waitingLine": "等待样例台词",
+    "demo.preparingLine": "样例台词准备中",
+    "demo.emptyCaption": "样例生成完成后会显示在这里。",
+    "demo.previewMain": "在主画面试播",
+    "demo.livePreview": "Demo 直播试播",
+    "demo.view": "查看",
+    "demo.collapse": "收起",
+    "inspector.label": "历史和调试",
+    "history.label": "历史记录",
+    "history.count": "{count} 轮",
+    "history.none": "暂无历史",
+    "history.untitled": "未命名会话",
+    "history.realtime": "实时对话",
+    "history.archived": "历史会话",
+    "history.currentPrefix": "当前",
+    "history.meta": "{time} · {count} 轮 · {seconds}s",
+    "history.review": "回看",
+    "history.current": "当前",
+    "history.continue": "继续",
+    "history.turn": "第 {number} 轮",
+    "history.saved": "已保存",
+    "debug.label": "调试详情",
+    "debug.expand": "展开",
+    "debug.reply": "模型回复",
+    "debug.segments": "分段",
+    "debug.log": "运行日志",
+    "debug.viewPrompt": "查看生成提示词",
+    "segment.title": "分段 {number}",
+    "segment.waiting": "等待",
+    "reply.waiting": "等待回复",
+    "reply.generating": "后台 LLM 正在生成短回复。",
+    "status.ready": "就绪",
+    "status.onAir": "通话中",
+    "status.starting": "启动中",
+    "status.busy": "繁忙",
+    "status.error": "错误",
+    "status.offline": "离线",
+    "phase.idle": "等待输入",
+    "phase.preview_ready": "分镜已准备",
+    "phase.preview_failed": "预览失败",
+    "phase.llm_replying": "正在思考",
+    "phase.prompt_expanding": "整理表达",
+    "phase.queued_on_gpu": "接入算力",
+    "phase.queued": "接入算力",
+    "phase.accepted": "开始连接",
+    "phase.worker_warming_model": "预热画面",
+    "phase.worker_running": "生成首帧",
+    "phase.running": "生成首帧",
+    "phase.generating": "生成首帧",
+    "phase.streaming": "实时通话中",
+    "phase.succeeded": "通话完成",
+    "phase.failed": "生成失败",
+    "phase.canceled": "已取消",
+    "phase.expired": "会话已过期",
+    "phase.new_conversation": "新会话已准备",
+    "phase.uploading": "正在连接",
+    "phase.previewing_prompt": "准备分镜",
+    "phase.input_required": "需要首帧",
+    "live.firstFrameReady": "首帧已就绪 · 正在接入直播流",
+    "live.firstFrameConnecting": "首帧接入中",
+    "live.newScene": "新场景准备中 · 等待直播流接入",
+    "live.waitingConnect": "等待接入",
+    "live.idleBridge": "实时待机画面 · 正在接入生成流",
+    "live.idle": "实时待机",
+    "live.connecting": "正在接入生成流",
+    "live.continuationFrame": "保持上一帧 · 正在接入新的直播流",
+    "live.continuation": "正在接入新的直播流",
+    "live.continuing": "正在续写",
+    "live.waiting": "等待直播流",
+    "live.reviewFull": "回看完整视频",
+    "live.reviewBuffer": "回看直播缓冲",
+    "live.ready": "直播画面已就绪 · 本轮 {current}s · 累计 {total}s",
+    "live.buffering": "正在缓冲直播画面 · 本轮 {current}s · 累计 {total}s",
+    "live.waitingFrame": "直播中 · 等待画面 · 累计 {total}s",
+    "live.preloaded": "直播中 · 累计 {total}s · 预载 {buffered}s",
+    "live.waitingMore": "直播中 · 累计 {total}s · 等待画面",
+    "live.clickStart": "点击画面开始直播 · 累计 {total}s",
+    "live.clickSound": "点击画面开启声音 · 累计 {total}s",
+    "live.ended": "直播结束 · 约 {total}s",
+    "live.finalReady": "完整视频已就绪",
+    "live.review": "回看",
+    "live.complete": "完成 {total}s",
+    "live.added": "直播 +{total}s",
+    "error.generationFailed": "生成没有成功。请检查场景描述、对话内容或稍后重试；详细原因在右侧调试日志。",
+    "error.interruptedRetry": "生成中断。已保留当前画面，可以直接重试本轮对话。",
+    "error.interruptedRestart": "生成中断。请稍后重试，或切换角色后重新开始通话。",
+    "error.submitFailed": "提交失败。请检查场景描述和对话内容，或稍后重试。",
+    "gpu.unknown": "算力未知",
+    "gpu.unavailable": "GPU 状态不可用：{error}",
+    "gpu.online": "算力在线",
+    "gpu.ready": "算力就绪",
+    "template.home.title": "居家讲解",
+    "template.home.role": "年轻男性 · 真实居家工作台",
+    "template.tech.title": "科技讲解",
+    "template.tech.role": "年轻男性 · 专业科技演播室",
+    "template.business.title": "商务顾问",
+    "template.business.role": "成熟女性 · 真实咨询办公室",
+    "template.education.title": "课程讲师",
+    "template.education.role": "年轻女性 · 明亮教室角落",
+    "template.wellness.title": "健康讲解员",
+    "template.wellness.role": "年长男性 · 现代健康空间",
+  },
+};
+
+let uiLanguage = localStorage.getItem(UI_LANGUAGE_STORAGE_KEY) === "zh" ? "zh" : "en";
+let currentPhase = "idle";
+
+function t(key, values = {}) {
+  const template = I18N[uiLanguage]?.[key] ?? I18N.en[key] ?? key;
+  return String(template).replace(/\{(\w+)\}/g, (_, name) => (
+    Object.prototype.hasOwnProperty.call(values, name) ? String(values[name]) : `{${name}}`
+  ));
+}
+
+function phaseLabel(phase) {
+  const normalized = String(phase || "idle");
+  const key = `phase.${normalized}`;
+  return I18N[uiLanguage]?.[key] || I18N.en[key] || normalized.replaceAll("_", " ");
+}
+
+function modeLabel(mode) {
+  return String(mode || "").toLowerCase() === "t2av" ? t("mode.text") : String(mode || "Text");
+}
+
+function setServiceStatus(key) {
+  serviceStatus.dataset.statusKey = key;
+  serviceStatus.textContent = t(key);
+}
+
+function setReplyState(key) {
+  replyBox.dataset.emptyState = key;
+  replyBox.textContent = t(key);
+}
+
+function setReplyContent(value) {
+  delete replyBox.dataset.emptyState;
+  replyBox.textContent = String(value || "");
+}
+
+function updateDemoDrawerAction() {
+  const action = demoDrawer?.querySelector(".drawer-action");
+  if (action) action.textContent = t(demoDrawer.open ? "demo.collapse" : "demo.view");
+}
+
+function applyUiLanguage(language, { persist = true } = {}) {
+  uiLanguage = language === "zh" ? "zh" : "en";
+  if (persist) localStorage.setItem(UI_LANGUAGE_STORAGE_KEY, uiLanguage);
+  document.documentElement.lang = uiLanguage === "zh" ? "zh-CN" : "en";
+
+  document.querySelectorAll("[data-i18n]").forEach((element) => {
+    element.textContent = t(element.dataset.i18n);
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+    element.placeholder = t(element.dataset.i18nPlaceholder);
+  });
+  document.querySelectorAll("[data-i18n-title]").forEach((element) => {
+    element.title = t(element.dataset.i18nTitle);
+  });
+  document.querySelectorAll("[data-i18n-aria-label]").forEach((element) => {
+    element.setAttribute("aria-label", t(element.dataset.i18nAriaLabel));
+  });
+  languageButtons.forEach((button) => {
+    const active = button.dataset.uiLanguage === uiLanguage;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+
+  if (replyBox.dataset.emptyState) {
+    replyBox.textContent = t(replyBox.dataset.emptyState);
+  }
+  if (serviceStatus.dataset.statusKey) {
+    serviceStatus.textContent = t(serviceStatus.dataset.statusKey);
+  }
+  renderTemplates();
+  setAspect(selectedAspect);
+  setPhase(currentPhase);
+  renderHistoryPanel();
+  renderLiveStatus();
+  updateDemoDrawerAction();
+  if (!demos.length) {
+    demoTitle.textContent = t("demo.waitingTitle");
+    demoCaption.textContent = t("demo.emptyCaption");
+    demoPlaceholder.textContent = t("demo.empty");
+  }
+}
 
 let currentJobId = null;
 let eventSource = null;
@@ -91,29 +454,6 @@ const MSE_LIVE_MIME_CANDIDATES = [
   'video/mp4; codecs="avc1.64001F, mp4a.40.2"',
   'video/mp4; codecs="avc1.42E01E, mp4a.40.2"',
 ];
-const PHASE_LABELS = {
-  idle: "等待输入",
-  preview_ready: "分镜已准备",
-  preview_failed: "预览失败",
-  llm_replying: "正在思考",
-  prompt_expanding: "整理表达",
-  queued_on_gpu: "接入算力",
-  queued: "接入算力",
-  accepted: "开始连接",
-  worker_warming_model: "预热画面",
-  worker_running: "生成首帧",
-  running: "生成首帧",
-  generating: "生成首帧",
-  streaming: "实时通话中",
-  succeeded: "通话完成",
-  failed: "生成失败",
-  canceled: "已取消",
-  new_conversation: "新会话已准备",
-  uploading: "正在连接",
-  previewing_prompt: "准备分镜",
-  input_required: "需要首帧",
-};
-
 function newConversationId() {
   if (window.crypto?.randomUUID) return `conv_${window.crypto.randomUUID()}`;
   return `conv_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
@@ -126,49 +466,49 @@ let activeSession = null;
 let archivedSessions = [];
 
 const ASPECT_PRESETS = {
-  landscape: { label: "横屏 864 x 480", width: 864, height: 480 },
-  portrait: { label: "竖屏 480 x 864", width: 480, height: 864 },
+  landscape: { labelKey: "aspect.landscape", width: 864, height: 480 },
+  portrait: { labelKey: "aspect.portrait", width: 480, height: 864 },
 };
 
 const REFERENCE_TEMPLATES = [
   {
     id: "live5_canvas_smoke",
-    title: "居家讲解",
-    role: "年轻男性 · 真实居家工作台",
+    titleKey: "template.home.title",
+    roleKey: "template.home.role",
     scene:
-      "static medium shot. A young male digital-human presenter with warm fair skin, neat short black hair, tidy eyebrows, a stable friendly face, and a charcoal gray zip-up hoodie over a white T-shirt sits at a tidy indoor home-studio desk. The background has a light oak tabletop, a gray fabric chair, pale blue wall shelves with books, a softly glowing desk lamp, a small green plant, and soft daylight from the side window. Bright balanced lighting, natural colors, soft portrait contrast, delicate catchlights in the eyes, readable background details, shallow depth of field, clean digital-human conversation look. Camera remains absolutely fixed. Framing unchanged. The presenter faces the camera directly, keeps steady eye contact, and makes small slow hand gestures near chest level while speaking.",
+      "eye-level tight medium close-up shot. A young male digital-human presenter with warm fair skin, neat short black hair, tidy eyebrows, a stable friendly face, and a charcoal gray zip-up hoodie over a white T-shirt sits upright in a contemporary home office. Only a narrow walnut desk edge is visible at the bottom below his hands; behind him, two closed neutral books and one small broad-leaf plant rest on a single oak shelf against an off-white plaster wall. The gray upholstered chair visibly supports his body. The presenter fills about two thirds of the frame height from head to mid-torso, his shoulders span roughly half the frame width, headroom and side margins stay compact, and his hands remain available in the lower quarter. A large diffused window at camera left is the dominant key light, while a white wall at camera right provides gentle neutral fill and consistent soft shadows. Natural 50mm-equivalent perspective, straight background verticals, moderate depth of field, crisp eyes, natural skin and fabric texture, controlled highlights, and polished natural color. The presenter keeps direct eye contact and uses one small slow hand gesture near chest level.",
     accent: "#c084fc",
   },
   {
     id: "tech_anchor",
-    title: "科技讲解",
-    role: "年轻男性 · 居家工作室",
+    titleKey: "template.tech.title",
+    roleKey: "template.tech.role",
     scene:
-      "static medium shot. A young male technology presenter with warm fair skin, neat short black hair, tidy eyebrows, and a navy casual blazer over a white shirt sits at a tidy home-studio workspace. The background has a light oak desk, a gray fabric chair, pale blue wall shelves with books, a laptop placed off to the side, a small green plant, and clean morning light falling across the face. Bright balanced lighting, natural colors, soft portrait contrast, delicate catchlights in the eyes, readable background details, shallow depth of field, clean digital-human conversation look. Camera remains absolutely fixed. Framing unchanged. The presenter faces the camera directly, keeps steady eye contact, and makes one small slow hand gesture near chest level while speaking.",
+      "eye-level tight medium close-up shot. A young male technology presenter with warm fair skin, neat short black hair, tidy eyebrows, and a navy casual blazer over a white shirt sits upright in a restrained professional technology studio. Only a narrow brushed-aluminum desk edge is visible at the bottom below his hands; behind him, one small closed silver equipment case rests inside a recessed oak shelf set into straight matte graphite acoustic panels. All equipment remains on the rear shelf, leaving the foreground and his torso unobstructed. A low-backed charcoal chair stays fully behind and visibly supports his body, and every visible panel is matte and unmarked. The presenter fills about two thirds of the frame height from head to mid-torso, his shoulders span roughly half the frame width, headroom and side margins stay compact, and his hands remain available in the lower quarter. A large frosted studio window outside the frame at camera left is the dominant key light, while a white wall at camera right provides gentle neutral fill and one consistent shadow direction. Natural 50mm-equivalent perspective, straight background verticals, moderate depth of field, crisp eyes, natural skin and fabric texture, controlled highlights, and refined neutral color. The presenter keeps direct eye contact and uses one small slow hand gesture near chest level.",
     accent: "#2563eb",
   },
   {
     id: "business_consultant",
-    title: "商务顾问",
-    role: "成熟女性 · 真实咨询办公室",
+    titleKey: "template.business.title",
+    roleKey: "template.business.role",
     scene:
-      "static medium shot. A mature female business consultant with soft fair skin, shoulder-length chestnut hair tucked behind one ear, natural makeup, a light gray blazer, and a white inner layer sits at a quiet consulting-office desk. The background has a matte ivory desk edge, light wood shelves, clear glass partitions, a white ceramic desk lamp, a small green plant, neat cream notebooks, a muted silver pen tray, and soft frontal daylight. Bright balanced lighting, natural colors, soft portrait contrast, delicate catchlights in the eyes, readable background details, shallow depth of field, clean digital-human conversation look. Camera remains absolutely fixed. Framing unchanged. The presenter faces the camera directly, keeps steady eye contact, gives a small reassuring nod, and lets one hand move slowly near the desk while speaking.",
+      "eye-level tight medium close-up shot. A mature female business consultant with soft fair skin, shoulder-length chestnut hair tucked behind one ear, natural makeup, a light gray blazer, and a white inner layer sits upright in a refined executive meeting room. Only a narrow band of an uncluttered matte light-gray meeting table is visible at the bottom below her hands; behind her, one small ceramic vase rests on a recessed sideboard against a continuous walnut wall panel. The upholstered chair visibly supports her body. The consultant fills about two thirds of the frame height from head to mid-torso, her shoulders span roughly half the frame width, headroom and side margins stay compact, and her hands remain available in the lower quarter. A large diffused window at camera left is the dominant key light, while a white wall at camera right provides gentle neutral fill and consistent soft shadows. Natural 50mm-equivalent perspective, straight background verticals, moderate depth of field, crisp eyes, natural skin and fabric texture, controlled highlights, and understated premium color. The consultant keeps direct eye contact, gives a small reassuring nod, and uses one measured hand gesture above the tabletop.",
     accent: "#0f766e",
   },
   {
     id: "education_coach",
-    title: "课程讲师",
-    role: "年轻女性 · 明亮教室角落",
+    titleKey: "template.education.title",
+    roleKey: "template.education.role",
     scene:
-      "static medium shot. A young female course instructor with soft fair skin, clear glasses, a low ponytail, a gentle expression, and a pale green cardigan over a white top sits in a sunny classroom coaching corner. The background has colorful flash cards, a clean whiteboard, picture books, a small desk plant, pastel storage boxes, soft side daylight, and warm shelf highlights. Bright balanced lighting, natural colors, soft portrait contrast, delicate catchlights in the eyes, readable classroom details, shallow depth of field, clean digital-human conversation look. Camera remains absolutely fixed. Framing unchanged. The presenter looks directly into the camera, keeps warm eye contact, and gestures softly with one hand while explaining.",
+      "eye-level tight medium close-up shot. A young female course instructor with soft fair skin, clear glasses, a low ponytail, a gentle expression, and a pale green cardigan over a white top sits upright in a bright modern classroom corner. Only a narrow pale gray table edge is visible at the bottom below her hands; behind her, a blank matte whiteboard is mounted flush to the wall, while three plain closed books with blank spines and one small plant rest on a low oak bookcase. The chair visibly supports her body, and every object is aligned with its supporting surface. The instructor fills about two thirds of the frame height from head to mid-torso, her shoulders span roughly half the frame width, headroom and side margins stay compact, and her hands remain available in the lower quarter. A large diffused window at camera left is the dominant key light, while a white wall at camera right provides gentle neutral fill and consistent soft shadows. Natural 50mm-equivalent perspective, straight background verticals, moderate depth of field, crisp eyes, natural skin and fabric texture, controlled highlights, and fresh natural color. The instructor keeps warm eye contact and uses one small slow explaining gesture.",
     accent: "#7c3aed",
   },
   {
     id: "wellness_host",
-    title: "健康讲解员",
-    role: "年长男性 · 绿植咨询室",
+    titleKey: "template.wellness.title",
+    roleKey: "template.wellness.role",
     scene:
-      "static medium shot. An older male wellness host with warm tan skin, short silver hair, soft wrinkles around the eyes, a trustworthy smile, and an off-white knit top sits in a calm plant-filled consultation room. The background has green leaves, light wood shelves, a ceramic diffuser, a woven basket, pale linen curtains, soft window light wrapping across the face, and a faint warm lamp glow behind the speaker. Bright balanced lighting, natural warm colors, soft portrait contrast, delicate catchlights in the eyes, readable background details, shallow depth of field, clean digital-human conversation look. Camera remains absolutely fixed. Framing unchanged. The presenter faces the camera, keeps warm eye contact, and slowly raises one hand near chest level while speaking.",
+      "eye-level tight medium close-up shot. An older male wellness host with warm tan skin, short silver hair, soft wrinkles around the eyes, a trustworthy smile, and an off-white knit top sits upright in a calm contemporary wellness studio. Behind him, one ceramic bowl and one neatly folded towel rest on an oak sideboard, a potted olive tree stands in the corner, and a floor-length linen curtain hangs straight against a pale mineral-plaster wall. The linen chair visibly supports his body, and every object has a clear physical support. The host fills about two thirds of the frame height from head to mid-torso, his shoulders span roughly half the frame width, headroom and side margins stay compact, and his hands remain available in the lower quarter. Diffused daylight through the curtain at camera left is the dominant key light, while a white wall at camera right provides gentle neutral fill and consistent soft shadows. Natural 50mm-equivalent perspective, straight background verticals, moderate depth of field, crisp eyes, natural skin and knit texture, controlled highlights, and calm natural color. The host keeps warm eye contact and uses one small slow reassuring gesture near chest level.",
     accent: "#b45309",
   },
 ];
@@ -222,7 +562,7 @@ function setAspect(aspect) {
   if (videoFrame) {
     videoFrame.dataset.aspect = selectedAspect;
   }
-  modeMetric.textContent = `${requestedMode} · ${getAspectPreset().width}x${getAspectPreset().height}`;
+  modeMetric.textContent = `${modeLabel(requestedMode)} · ${getAspectPreset().width}x${getAspectPreset().height}`;
 }
 
 function selectTemplate(templateId, applyScene = true) {
@@ -252,13 +592,14 @@ function renderTemplates() {
     card.className = "template-card";
     card.dataset.templateId = template.id;
     card.style.setProperty("--template-accent", template.accent);
+    card.classList.toggle("active", template.id === selectedTemplateId);
 
     const body = document.createElement("div");
     body.className = "template-body";
     const title = document.createElement("strong");
-    title.textContent = template.title;
+    title.textContent = t(template.titleKey);
     const role = document.createElement("span");
-    role.textContent = template.role;
+    role.textContent = t(template.roleKey);
     body.append(title, role);
 
     const check = document.createElement("span");
@@ -285,7 +626,7 @@ function demoCaptionForTime(demo, time, duration) {
     .map((segment) => String(segment.speech || "").trim())
     .filter(Boolean);
   const text = speeches.length ? speeches.join(" ") : String(demo?.caption || "").trim();
-  if (!text) return "等待样例台词";
+  if (!text) return t("demo.waitingLine");
   const safeDuration = Number.isFinite(duration) && duration > 0 ? duration : 10;
   const ratio = Math.min(1, Math.max(0.12, time / safeDuration));
   const chars = Math.max(6, Math.ceil(text.length * ratio));
@@ -324,8 +665,8 @@ function playDemo(index) {
   activeDemoIndex = Math.max(0, Math.min(index, demos.length - 1));
   const demo = demos[activeDemoIndex];
   demoTitle.textContent = demo.title || `Demo ${activeDemoIndex + 1}`;
-  demoCaption.textContent = demo.caption || "样例台词准备中";
-  demoMode.textContent = `${demo.mode || "t2av"} · ${demo.video_width || "--"}x${demo.video_height || "--"}`;
+  demoCaption.textContent = demo.caption || t("demo.preparingLine");
+  demoMode.textContent = `${modeLabel(demo.mode || "t2av")} · ${demo.video_width || "--"}x${demo.video_height || "--"}`;
   demoFps.textContent = "";
   demoClock.textContent = "00:00";
   if (demoLiveBtn) {
@@ -360,8 +701,8 @@ function startDemoLiveReference() {
   currentJobId = null;
   setBusy(false);
   setPhase("streaming");
-  stageTitle.textContent = demo.title || "Demo 直播试播";
-  modeMetric.textContent = `${demo.mode || "demo"} · ${demo.video_width || "--"}x${demo.video_height || "--"}`;
+  stageTitle.textContent = demo.title || t("demo.livePreview");
+  modeMetric.textContent = `${modeLabel(demo.mode || "demo")} · ${demo.video_width || "--"}x${demo.video_height || "--"}`;
   log(`demo reference live: ${demo.title || demo.task_id}`);
   demoLiveSource = new EventSource(`${demo.live_events_url}?initial_delay=2&interval=1`);
   demoLiveSource.onmessage = (message) => {
@@ -401,9 +742,9 @@ async function refreshDemos() {
     const data = await res.json();
     demos = (data.demos || []).filter((demo) => demo.video_url);
     if (!demos.length) {
-      demoTitle.textContent = "等待样例";
-      demoCaption.textContent = "样例生成完成后会显示在这里。";
-      demoMode.textContent = "idle";
+      demoTitle.textContent = t("demo.waitingTitle");
+      demoCaption.textContent = t("demo.emptyCaption");
+      demoMode.textContent = phaseLabel("idle");
       demoFps.textContent = "";
       demoClock.textContent = "00:00";
       demoPlaceholder.classList.remove("hidden");
@@ -428,9 +769,11 @@ function setBusy(isBusy) {
   previewBtn.disabled = isBusy || !serviceReady;
   cancelBtn.disabled = !jobActive;
   resetSessionBtn.disabled = historyLocked;
-  serviceStatus.textContent = historyLocked
-    ? "ON AIR"
-    : (!serviceReady ? "STARTING" : (systemBlocked ? "BUSY" : "READY"));
+  setServiceStatus(
+    historyLocked
+      ? "status.onAir"
+      : (!serviceReady ? "status.starting" : (systemBlocked ? "status.busy" : "status.ready")),
+  );
   renderHistoryPanel();
 }
 
@@ -450,9 +793,10 @@ function log(line) {
 
 function setPhase(phase) {
   const normalized = phase || "idle";
-  const label = PHASE_LABELS[normalized] || normalized.replaceAll("_", " ");
+  currentPhase = normalized;
+  const label = phaseLabel(normalized);
   phaseMetric.textContent = label;
-  stageTitle.textContent = liveStarted ? "实时通话中" : label;
+  stageTitle.textContent = liveStarted ? t("stage.liveConversation") : label;
 }
 
 function setSystemNotice(message, level = "info") {
@@ -468,7 +812,7 @@ function setSystemNotice(message, level = "info") {
 
 function showUserFacingError(message) {
   setSystemNotice(
-    message || "生成没有成功。请检查场景描述、对话内容或稍后重试；详细原因在右侧调试日志。",
+    message || t("error.generationFailed"),
     "warning",
   );
 }
@@ -478,9 +822,9 @@ function renderSegments(segments) {
   (segments || []).forEach((segment) => {
     const item = document.createElement("div");
     item.className = "segment-item";
-    const suffix = segment.is_transition ? " · Waiting" : "";
+    const suffix = segment.is_transition ? ` · ${t("segment.waiting")}` : "";
     const title = document.createElement("strong");
-    title.textContent = `Segment ${Number(segment.segment_id) + 1}${suffix}`;
+    title.textContent = `${t("segment.title", { number: Number(segment.segment_id) + 1 })}${suffix}`;
     const speech = document.createElement("p");
     speech.textContent = segment.speech || "";
     const meta = document.createElement("div");
@@ -489,7 +833,7 @@ function renderSegments(segments) {
     const details = document.createElement("details");
     details.className = "prompt-details";
     const summary = document.createElement("summary");
-    summary.textContent = "查看生成提示词";
+    summary.textContent = t("debug.viewPrompt");
     const prompt = document.createElement("pre");
     prompt.textContent = segment.prompt || "";
     details.append(summary, prompt);
@@ -499,7 +843,7 @@ function renderSegments(segments) {
 }
 
 function resetTextPreview() {
-  replyBox.textContent = "后台 LLM 正在生成短回复。";
+  setReplyState("reply.generating");
   segmentList.innerHTML = "";
 }
 
@@ -556,9 +900,9 @@ async function previewSegments() {
       throw new Error(message);
     }
     const data = await res.json();
-    replyBox.textContent = data.reply || "";
+    setReplyContent(data.reply || "");
     renderSegments(data.segments || []);
-    modeMetric.textContent = `${data.mode || requestedMode} · ${data.video_width || getAspectPreset().width}x${data.video_height || getAspectPreset().height}`;
+    modeMetric.textContent = `${modeLabel(data.mode || requestedMode)} · ${data.video_width || getAspectPreset().width}x${data.video_height || getAspectPreset().height}`;
     setPhase("preview_ready");
     log(`preview ${data.mode || requestedMode}: ${(data.segments || []).length} segment(s), no GPU used`);
     const firstPrompt = (data.segments || [])[0]?.prompt;
@@ -608,9 +952,9 @@ function formatSessionTime(value) {
   return `${(date.getMonth() + 1).toString().padStart(2, "0")}/${date.getDate().toString().padStart(2, "0")} ${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
 }
 
-function summarizeLine(text, fallback = "未命名会话") {
+function summarizeLine(text, fallback = "") {
   const compact = String(text || "").replace(/\s+/g, " ").trim();
-  return compact ? compact.slice(0, 34) : fallback;
+  return compact ? compact.slice(0, 34) : (fallback || t("history.untitled"));
 }
 
 function normalizeTurn(turn) {
@@ -774,7 +1118,7 @@ function upsertTurn(taskId, patch = {}) {
   }
   activeSession.updatedAt = Date.now();
   if (!activeSession.title) {
-    activeSession.title = summarizeLine(turn.userText || turn.reply, "实时对话");
+    activeSession.title = summarizeLine(turn.userText || turn.reply, t("history.realtime"));
   }
   persistActiveSession();
 }
@@ -831,7 +1175,11 @@ function loadSessionTimeline(session, { activate = false, autoplay = false } = {
   }
   const lastTurn = normalized.turns[normalized.turns.length - 1];
   if (lastTurn) {
-    replyBox.textContent = lastTurn.reply || "等待后台 LLM 生成短回复。";
+    if (lastTurn.reply) {
+      setReplyContent(lastTurn.reply);
+    } else {
+      setReplyState("reply.generating");
+    }
     renderSegments(lastTurn.segments || []);
   }
   renderHistoryPanel();
@@ -848,12 +1196,12 @@ function renderHistoryPanel() {
     .filter((session) => !activeSession || session.id !== activeSession.id)
     .forEach((session) => rows.push({ session: normalizeSession(session), active: false }));
   const totalTurns = rows.reduce((sum, row) => sum + (row.session.turns || []).length, 0);
-  if (historyCount) historyCount.textContent = `${totalTurns} 轮`;
+  if (historyCount) historyCount.textContent = t("history.count", { count: totalTurns });
   historyList.innerHTML = "";
   if (!rows.length) {
     const empty = document.createElement("div");
     empty.className = "history-empty";
-    empty.textContent = "暂无历史";
+    empty.textContent = t("history.none");
     historyList.appendChild(empty);
     return;
   }
@@ -866,16 +1214,20 @@ function renderHistoryPanel() {
     const titleWrap = document.createElement("div");
     const title = document.createElement("strong");
     title.textContent = active
-      ? `当前 · ${summarizeLine(session.title || session.scene, "实时对话")}`
-      : summarizeLine(session.title || session.scene, "历史会话");
+      ? `${t("history.currentPrefix")} · ${summarizeLine(session.title || session.scene, t("history.realtime"))}`
+      : summarizeLine(session.title || session.scene, t("history.archived"));
     const meta = document.createElement("span");
-    meta.textContent = `${formatSessionTime(session.updatedAt)} · ${(session.turns || []).length} 轮 · ${sessionVideoUrls(session).filter(isPreviewVideo).length}s`;
+    meta.textContent = t("history.meta", {
+      time: formatSessionTime(session.updatedAt),
+      count: (session.turns || []).length,
+      seconds: sessionVideoUrls(session).filter(isPreviewVideo).length,
+    });
     titleWrap.append(title, meta);
     const actions = document.createElement("div");
     actions.className = "history-actions";
     const reviewBtn = document.createElement("button");
     reviewBtn.type = "button";
-    reviewBtn.textContent = "回看";
+    reviewBtn.textContent = t("history.review");
     reviewBtn.disabled = historyLocked;
     reviewBtn.addEventListener("click", (event) => {
       event.preventDefault();
@@ -883,7 +1235,7 @@ function renderHistoryPanel() {
     });
     const continueBtn = document.createElement("button");
     continueBtn.type = "button";
-    continueBtn.textContent = active ? "当前" : "继续";
+    continueBtn.textContent = active ? t("history.current") : t("history.continue");
     continueBtn.disabled = active || historyLocked;
     continueBtn.addEventListener("click", (event) => {
       event.preventDefault();
@@ -901,7 +1253,7 @@ function renderHistoryPanel() {
       turnEl.className = "history-turn";
       const head = document.createElement("div");
       head.className = "history-turn-head";
-      head.innerHTML = `<strong>第 ${index + 1} 轮</strong><span>${turn.status || "saved"}</span>`;
+      head.innerHTML = `<strong>${t("history.turn", { number: index + 1 })}</strong><span>${turn.status ? phaseLabel(turn.status) : t("history.saved")}</span>`;
       const user = document.createElement("p");
       user.className = "history-user";
       user.textContent = turn.userText || "";
@@ -1207,8 +1559,8 @@ function showGeneratedPreviewFrame(url) {
     liveCanvas.classList.add("has-frame");
     emptyStage.classList.add("hidden");
     liveOverlay.classList.remove("hidden");
-    liveOverlayText.textContent = "首帧已就绪 · 正在接入直播流";
-    chunkMetric.textContent = "首帧接入中";
+    liveOverlayText.textContent = t("live.firstFrameReady");
+    chunkMetric.textContent = t("live.firstFrameConnecting");
   };
   img.src = url;
 }
@@ -1320,7 +1672,7 @@ function updateLiveControls() {
   liveProgress.disabled = !liveReviewMode || (!useFinalReview && liveSegments.length === 0);
   liveReplayBtn.disabled = !liveFinalUrl && liveSegments.length === 0;
   liveReturnBtn.disabled = !liveReviewMode || liveStreamComplete;
-  livePlayPauseBtn.textContent = player.paused ? "播放" : "暂停";
+  livePlayPauseBtn.textContent = t(player.paused ? "playback.play" : "playback.pause");
   liveClock.textContent = liveReviewMode
     ? `${formatClock(current)} / ${formatClock(duration)}`
     : `${formatClock(current)} / LIVE`;
@@ -1411,8 +1763,8 @@ function prepareLiveNewRootStage() {
   clearLiveCanvas();
   emptyStage.classList.remove("hidden");
   liveOverlay.classList.remove("hidden");
-  liveOverlayText.textContent = "新场景准备中 · 等待直播流接入";
-  chunkMetric.textContent = "等待接入";
+  liveOverlayText.textContent = t("live.newScene");
+  chunkMetric.textContent = t("live.waitingConnect");
   updateLiveControls();
 }
 
@@ -1463,16 +1815,16 @@ function prepareLiveIdleBridgeStage() {
     emptyStage.classList.add("hidden");
     liveCanvas?.classList.add("has-frame");
     liveOverlay.classList.remove("hidden");
-    liveOverlayText.textContent = "实时待机画面 · 正在接入生成流";
-    chunkMetric.textContent = "实时待机";
+    liveOverlayText.textContent = t("live.idleBridge");
+    chunkMetric.textContent = t("live.idle");
     startLiveCanvasLoop();
   } else {
     clearMedia(primaryPlayer);
     clearLiveCanvas();
     emptyStage.classList.remove("hidden");
     liveOverlay.classList.remove("hidden");
-    liveOverlayText.textContent = "正在接入生成流";
-    chunkMetric.textContent = "正在接入";
+    liveOverlayText.textContent = t("live.connecting");
+    chunkMetric.textContent = t("phase.uploading");
   }
   updateLiveControls();
 }
@@ -1511,9 +1863,9 @@ function prepareLiveContinuationStage() {
   }
   liveOverlay.classList.remove("hidden");
   liveOverlayText.textContent = hasFrozenFrame
-    ? "保持上一帧 · 正在接入新的直播流"
-    : "正在接入新的直播流";
-  chunkMetric.textContent = "正在续写";
+    ? t("live.continuationFrame")
+    : t("live.continuation");
+  chunkMetric.textContent = t("live.continuing");
   updateLiveControls();
 }
 
@@ -1524,34 +1876,34 @@ function renderLiveStatus() {
     : livePlayIndex;
   const buffered = Math.max(0, total - Math.max(0, currentIndex + 1));
   const currentBuffered = Math.max(0, total - currentJobLiveStartIndex);
-  let label = "等待直播流";
+  let label = t("live.waiting");
   if (liveReviewMode) {
-    label = shouldUseFinalVideoForReview() ? "回看完整视频" : "回看直播缓冲";
+    label = shouldUseFinalVideoForReview() ? t("live.reviewFull") : t("live.reviewBuffer");
   } else if (!liveStarted && total > 0) {
     const startBufferSegments = liveStartBufferSegments();
     label = currentBuffered >= startBufferSegments
-      ? `直播画面已就绪 · 本轮 ${currentBuffered}s · 累计 ${total}s`
-      : `正在缓冲直播画面 · 本轮 ${currentBuffered}s · 累计 ${total}s`;
+      ? t("live.ready", { current: currentBuffered, total })
+      : t("live.buffering", { current: currentBuffered, total });
   } else if (liveStarted && !liveEnded) {
     const waiting = player.ended && buffered === 0;
     label = waiting
-      ? `直播中 · 等待画面 · 累计 ${total}s`
+      ? t("live.waitingFrame", { total })
       : buffered > 0
-        ? `直播中 · 累计 ${total}s · 预载 ${buffered}s`
-        : `直播中 · 累计 ${total}s · 等待画面`;
+        ? t("live.preloaded", { total, buffered })
+        : t("live.waitingMore", { total });
     if (liveAutoplayBlocked) {
-      label = `点击画面开始直播 · 累计 ${total}s`;
+      label = t("live.clickStart", { total });
     } else if (liveMutedAutoplay) {
-      label = `点击画面开启声音 · 累计 ${total}s`;
+      label = t("live.clickSound", { total });
     }
   } else if (liveEnded) {
-    label = `直播结束 · 约 ${total}s`;
+    label = t("live.ended", { total });
   } else if (liveFinalUrl) {
-    label = "完整视频已就绪";
+    label = t("live.finalReady");
   }
   chunkMetric.textContent = liveReviewMode
-    ? "回看"
-    : liveEnded ? `完成 ${total}s` : `直播 +${total}s`;
+    ? t("live.review")
+    : liveEnded ? t("live.complete", { total }) : t("live.added", { total });
   liveOverlayText.textContent = label;
   liveOverlay.classList.toggle("hidden", !liveStarted && !liveEnded && total === 0 && !liveFinalUrl);
 
@@ -1934,7 +2286,7 @@ async function recoverJobAfterEventLoss(taskId) {
       persistActiveSession({ mirrorToHistory: true });
       setPhase(status);
       if (status === "failed") {
-        showUserFacingError("生成中断。已保留当前画面，可以直接重试本轮对话。");
+        showUserFacingError(t("error.interruptedRetry"));
       }
       closeEvents();
       currentJobId = null;
@@ -1968,7 +2320,7 @@ function connectEvents(taskId) {
       return;
     }
     if (event.event === "llm_reply") {
-      replyBox.textContent = event.reply || "";
+      setReplyContent(event.reply || "");
       upsertTurn(taskId, { reply: event.reply || "", status: "prompt_expanding" });
       setPhase("prompt_expanding");
     } else if (event.event === "prompt_ready") {
@@ -2006,10 +2358,10 @@ function connectEvents(taskId) {
       finishMseLiveStream();
       upsertTurn(taskId, { status: "failed" });
       persistActiveSession({ mirrorToHistory: true });
-      serviceStatus.textContent = "ERROR";
+      setServiceStatus("status.error");
       setPhase("failed");
       setBusy(false);
-      showUserFacingError("生成中断。请稍后重试，或切换角色后重新开始通话。");
+      showUserFacingError(t("error.interruptedRestart"));
       log(`ERROR: ${event.message}`);
     } else if (event.event === "closed") {
       closeEvents();
@@ -2032,8 +2384,8 @@ async function refreshVideos(taskId) {
       closeEvents();
       currentJobId = null;
       setBusy(false);
-      if (serviceStatus.textContent === "ON AIR") {
-        serviceStatus.textContent = serviceReady ? "READY" : "STARTING";
+      if (interactionBusy || currentJobId) {
+        setServiceStatus(serviceReady ? "status.ready" : "status.starting");
       }
     }
     upsertTurn(taskId, { status: "expired" });
@@ -2051,7 +2403,7 @@ async function refreshVideos(taskId) {
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!serviceReady) {
-    serviceStatus.textContent = "STARTING";
+    setServiceStatus("status.starting");
     log("Service is still starting. Wait until the status is READY.");
     return;
   }
@@ -2090,7 +2442,7 @@ form.addEventListener("submit", async (event) => {
     prepareLiveContinuationStage();
     log(`continue conversation ${conversationId}`);
   }
-  replyBox.textContent = "后台 LLM 正在生成短回复。";
+  setReplyState("reply.generating");
   segmentList.innerHTML = "";
   setBusy(true);
   setPhase("uploading");
@@ -2122,16 +2474,16 @@ form.addEventListener("submit", async (event) => {
       status: data.status || data.phase || "accepted",
       createdAt: Date.now(),
     });
-    modeMetric.textContent = `${data.mode || requestedMode} · ${data.video_width || getAspectPreset().width}x${data.video_height || getAspectPreset().height}`;
+    modeMetric.textContent = `${modeLabel(data.mode || requestedMode)} · ${data.video_width || getAspectPreset().width}x${data.video_height || getAspectPreset().height}`;
     setPhase(data.phase);
     log(`accepted ${currentJobId}${data.is_continuation ? " · continuation" : " · new root"} · conversation=${data.conversation_id || conversationId}`);
     connectEvents(currentJobId);
   } catch (err) {
     finishMseLiveStream();
     setBusy(false);
-    serviceStatus.textContent = "ERROR";
+    setServiceStatus("status.error");
     setPhase("failed");
-    showUserFacingError("提交失败。请检查场景描述和对话内容，或稍后重试。");
+    showUserFacingError(t("error.submitFailed"));
     log(`submit failed: ${err.message || err}`);
   }
 });
@@ -2142,8 +2494,7 @@ if (demoLiveBtn) {
 }
 if (demoDrawer) {
   demoDrawer.addEventListener("toggle", () => {
-    const action = demoDrawer.querySelector(".drawer-action");
-    if (action) action.textContent = demoDrawer.open ? "收起" : "查看";
+    updateDemoDrawerAction();
     if (demoDrawer.open && activeDemoIndex >= 0) {
       demoPlayer.play().catch(() => {});
       if (!demoRaf) demoRaf = requestAnimationFrame(updateDemoOverlay);
@@ -2157,6 +2508,11 @@ if (demoDrawer) {
 clearTemplateBtn.addEventListener("click", () => selectTemplate("", false));
 sceneDescription.addEventListener("input", syncTemplateSelectionToScene);
 resetSessionBtn.addEventListener("click", () => startNewConversation(true));
+languageButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    applyUiLanguage(button.dataset.uiLanguage || "en");
+  });
+});
 
 cancelBtn.addEventListener("click", async () => {
   if (!currentJobId) return;
@@ -2191,7 +2547,8 @@ if (startupPreferences.scene) {
 setAspect(startupPreferences.aspect || "landscape");
 resetLiveStage(true);
 persistActiveSession();
-modeMetric.textContent = `${requestedMode} · ${getAspectPreset().width}x${getAspectPreset().height}`;
+modeMetric.textContent = `${modeLabel(requestedMode)} · ${getAspectPreset().width}x${getAspectPreset().height}`;
+applyUiLanguage(uiLanguage, { persist: false });
 refreshDemos();
 setInterval(refreshDemos, 60000);
 
@@ -2210,7 +2567,7 @@ async function refreshReadiness() {
       readinessLogKey = logKey;
     }
     if (!currentJobId && !interactionBusy) {
-      serviceStatus.textContent = serviceReady ? "READY" : "STARTING";
+      setServiceStatus(serviceReady ? "status.ready" : "status.starting");
     }
   } catch {
     serviceReady = false;
@@ -2218,7 +2575,7 @@ async function refreshReadiness() {
       log("TaoMate service is offline.");
       readinessLogKey = "offline";
     }
-    if (!currentJobId && !interactionBusy) serviceStatus.textContent = "OFFLINE";
+    if (!currentJobId && !interactionBusy) setServiceStatus("status.offline");
   }
   form.querySelector("button[type='submit']").disabled = interactionBusy || !serviceReady;
   previewBtn.disabled = interactionBusy || !serviceReady;
@@ -2236,15 +2593,15 @@ async function refreshSystem() {
     const gpu = data.gpu || {};
     if (!gpu.available) {
       systemBlocked = false;
-      gpuMetric.textContent = "算力未知";
-      setSystemNotice(gpu.error ? `GPU 状态不可用：${gpu.error}` : "", "warning");
+      gpuMetric.textContent = t("gpu.unknown");
+      setSystemNotice(gpu.error ? t("gpu.unavailable", { error: gpu.error }) : "", "warning");
       return;
     }
     const busy = (gpu.processes || []).filter((proc) => proc.sm > 10 || proc.mem > 10);
     systemBlocked = false;
-    gpuMetric.textContent = busy.length ? "算力在线" : "算力就绪";
-    if (!currentJobId || serviceStatus.textContent !== "ON AIR") {
-      serviceStatus.textContent = serviceReady ? "READY" : "STARTING";
+    gpuMetric.textContent = busy.length ? t("gpu.online") : t("gpu.ready");
+    if (!currentJobId && !interactionBusy) {
+      setServiceStatus(serviceReady ? "status.ready" : "status.starting");
     }
     setSystemNotice("");
     if (busy.length) {
@@ -2257,7 +2614,7 @@ async function refreshSystem() {
       lastGpuSummary = "";
     }
   } catch {
-    gpuMetric.textContent = "算力未知";
+    gpuMetric.textContent = t("gpu.unknown");
   }
 }
 

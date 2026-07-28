@@ -3815,7 +3815,6 @@ def build_interactive_prefix_kv_cache(
 @dataclass
 class WindowedModelRuntime:
     generator: Any
-    train_step: int
     video_vae: Any
     audio_vae: Any
     denoising_sigmas: torch.Tensor
@@ -4127,7 +4126,7 @@ def _load_windowed_model_runtime(
     world_size = int(os.environ.get("WORLD_SIZE", "1"))
     if world_size != 2:
         raise RuntimeError(f"TaoMate requires two model workers, got {world_size}.")
-    generator, train_step = load_model_generator(
+    generator = load_model_generator(
         model_ckpt_path=args.model_ckpt,
         original_ckpt_path=args.original_ckpt,
         video_height=args.video_height,
@@ -4139,8 +4138,6 @@ def _load_windowed_model_runtime(
         device="cpu",
         dtype=dtype,
         causal_rope_type=args.causal_rope_type,
-        use_mmap=True,
-        use_ema=True,
         learned_memory_enabled=args.learned_memory,
         learned_memory_mode=args.learned_memory_mode,
         learned_memory_layer_interval=args.learned_memory_layer_interval,
@@ -4242,7 +4239,6 @@ def _load_windowed_model_runtime(
 
     return WindowedModelRuntime(
         generator=generator,
-        train_step=train_step,
         video_vae=video_vae,
         audio_vae=audio_vae,
         denoising_sigmas=denoising_sigmas,
@@ -4615,7 +4611,6 @@ def run_inference(args: argparse.Namespace, *, destroy_process_group: bool = Tru
     _refresh_runtime_denoising_sigmas(runtime, args, device=device)
     _refresh_runtime_inference_policy(runtime, args, use_sink_block=use_sink_block)
     first_stream_profiler.mark("runtime_get_done", runtime_cached=runtime_cached)
-    train_step = runtime.train_step
     video_vae = runtime.video_vae
     audio_vae = runtime.audio_vae
     kv_pipeline = runtime.kv_pipeline

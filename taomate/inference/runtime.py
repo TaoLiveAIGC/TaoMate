@@ -54,7 +54,6 @@ MAX_WINDOWS = 12
 
 @dataclass
 class ModelRuntime:
-    train_step: int
     video_vae: Any
     audio_vae: Any
     text_conditioner: Optional[Any]
@@ -118,7 +117,7 @@ def _load_runtime(
     device: str,
     dtype: torch.dtype,
 ) -> ModelRuntime:
-    wrapper, train_step = load_generator(
+    wrapper = load_generator(
         config.model_ckpt,
         config.base_model_ckpt,
         config.video_height,
@@ -192,7 +191,6 @@ def _load_runtime(
     pipeline.interactive_commit_final_clean_kv = True
 
     return ModelRuntime(
-        train_step=train_step,
         video_vae=video_vae,
         audio_vae=audio_vae,
         text_conditioner=text_conditioner,
@@ -695,10 +693,7 @@ def run_inference(config: InferenceConfig) -> None:
             media_device,
         )
 
-        output_path = os.path.join(
-            config.output_dir,
-            f"{case_id}_step{runtime.train_step}.mp4",
-        )
+        output_path = os.path.join(config.output_dir, f"{case_id}.mp4")
         write_valid_mp4(
             write_video,
             output_path,
